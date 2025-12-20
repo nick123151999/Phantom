@@ -21,7 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.wlqq.phantom.library.pm.PluginInfo;
@@ -107,7 +107,12 @@ class DebugReceiver extends BroadcastReceiver {
         intentFilter.addAction(sActionDumpInstalledPlugins);
         intentFilter.addAction(sActionDumpActivityProxy);
         intentFilter.addAction(sActionDumpServiceProxy);
-        context.registerReceiver(new DebugReceiver(), intentFilter);
+        // Android 13+ requires RECEIVER_EXPORTED or RECEIVER_NOT_EXPORTED flag
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(new DebugReceiver(), intentFilter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            context.registerReceiver(new DebugReceiver(), intentFilter);
+        }
     }
 
     @Override

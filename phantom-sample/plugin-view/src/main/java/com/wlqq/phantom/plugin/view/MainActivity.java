@@ -21,9 +21,9 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -78,39 +78,34 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_toast:
-                Toast.makeText(this, "host application id: " + getHostApplicationId(), Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.btn_notification:
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-                builder.setSmallIcon(getHostLauncherIconId());
-                builder.setAutoCancel(true);
-                builder.setContentInfo("ContentInfo")
-                        .setContentText("ContentText")
-                        .setContentTitle("ContentTitle")
-                        .setTicker("Ticker");
+        int id = v.getId();
+        if (id == R.id.btn_toast) {
+            Toast.makeText(this, "host application id: " + getHostApplicationId(), Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.btn_notification) {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(getHostLauncherIconId());
+            builder.setAutoCancel(true);
+            builder.setContentInfo("ContentInfo")
+                    .setContentText("ContentText")
+                    .setContentTitle("ContentTitle")
+                    .setTicker("Ticker");
 
-                final Intent intent = new Intent();
-                intent.setClassName("com.wlqq.phantom.plugin.component",
-                        "com.wlqq.phantom.plugin.component.MainActivity");
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            final Intent intent = new Intent();
+            intent.setClassName("com.wlqq.phantom.plugin.component",
+                    "com.wlqq.phantom.plugin.component.MainActivity");
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                // 启动插件中的 Activity 需要使用 PhantomUtils#resolveActivity 将插件原始 Intent 包装成坑位 Activity
-                final Intent proxyIntent = PhantomUtils.resolveActivity(intent, ActivityInfo.LAUNCH_MULTIPLE);
+            // 启动插件中的 Activity 需要使用 PhantomUtils#resolveActivity 将插件原始 Intent 包装成坑位 Activity
+            final Intent proxyIntent = PhantomUtils.resolveActivity(intent, ActivityInfo.LAUNCH_MULTIPLE);
 
-                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
-                        0, proxyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                builder.setContentIntent(pendingIntent);
-                builder.setWhen(System.currentTimeMillis());
-                nm.notify(0xFF, builder.build());
-                break;
-            case R.id.btn_webview:
-                mWebView.setVisibility(View.VISIBLE);
-                mWebView.loadUrl("http://www.baidu.com");
-                break;
-            default:
-                break;
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                    0, proxyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(pendingIntent);
+            builder.setWhen(System.currentTimeMillis());
+            nm.notify(0xFF, builder.build());
+        } else if (id == R.id.btn_webview) {
+            mWebView.setVisibility(View.VISIBLE);
+            mWebView.loadUrl("http://www.baidu.com");
         }
     }
 

@@ -19,8 +19,8 @@ package com.wlqq.phantom.library.log;
 import android.app.Application;
 import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.wlqq.phantom.library.BuildConfig;
 import com.wlqq.phantom.library.env.Constants;
 

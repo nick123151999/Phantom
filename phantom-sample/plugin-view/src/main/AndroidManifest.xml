@@ -15,8 +15,7 @@
   ~ limitations under the License.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.wlqq.phantom.plugin.view">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:name=".PluginViewApplication"
@@ -38,7 +37,8 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="MainActivity">
+            android:label="MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

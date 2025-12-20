@@ -18,7 +18,7 @@ package com.wlqq.phantom.library.pm;
 
 
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.wlqq.phantom.library.utils.FileUtils;
 import com.wlqq.phantom.library.utils.VLog;

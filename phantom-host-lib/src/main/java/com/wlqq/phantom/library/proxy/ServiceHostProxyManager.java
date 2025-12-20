@@ -17,7 +17,7 @@
 package com.wlqq.phantom.library.proxy;
 
 import android.app.Service;
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import com.wlqq.phantom.library.utils.VLog;
 

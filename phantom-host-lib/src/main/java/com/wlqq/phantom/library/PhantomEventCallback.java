@@ -16,7 +16,7 @@
 
 package com.wlqq.phantom.library;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.wlqq.phantom.library.pm.PluginInfo;
 import com.wlqq.phantom.library.pm.InstallResult;

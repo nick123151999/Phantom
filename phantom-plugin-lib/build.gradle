@@ -20,8 +20,8 @@ dependencies {
     compileOnly 'com.google.android:android:4.+'
 }
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
 
 ext {
     POM_ARTIFACT_ID = 'phantom-plugin-lib'
@@ -29,5 +29,6 @@ ext {
     POM_DESC = 'phantom plugin library'
 }
 
-apply from: file("${rootDir}/buildscript/publish_local.gradle")
-apply from: file("${rootDir}/buildscript/publish_bintray.gradle")
+// Temporarily disabled for build compatibility
+// apply from: file("${rootDir}/buildscript/publish_local.gradle")
+// apply from: file("${rootDir}/buildscript/publish_bintray.gradle")

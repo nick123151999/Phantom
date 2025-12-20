@@ -16,13 +16,18 @@
 
 apply plugin: 'groovy'
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 dependencies {
-    compile gradleApi()//gradle sdk
-    compile localGroovy()//groovy sdk
-    compileOnly "com.android.tools.build:gradle:3.1.4"
-    compile 'org.javassist:javassist:3.18.2-GA'
+    implementation gradleApi()//gradle sdk
+    implementation localGroovy()//groovy sdk
+    compileOnly "com.android.tools.build:gradle:8.8.0"
+    implementation 'org.javassist:javassist:3.30.2-GA'
     // https://mvnrepository.com/artifact/org.jooq/joor-java-6
-    compile group: 'org.jooq', name: 'joor-java-6', version: '0.9.10'
+    implementation group: 'org.jooq', name: 'joor-java-8', version: '0.9.15'
 }
 
 ext {
@@ -31,5 +36,6 @@ ext {
     POM_DESC = 'phantom gradle plugin'
 }
 
-apply from: file("${rootDir}/buildscript/publish_local.gradle")
-apply from: file("${rootDir}/buildscript/publish_bintray.gradle")
+// Temporarily disabled for build compatibility
+// apply from: file("${rootDir}/buildscript/publish_local.gradle")
+// apply from: file("${rootDir}/buildscript/publish_bintray.gradle")

@@ -25,8 +25,8 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,28 +63,21 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         final Intent intent = new Intent();
-        switch (v.getId()) {
-            case R.id.btn_start_plugin_intent_service:
-                intent.setClass(getActivity(), PluginIntentService.class);
-                getContext().startService(intent);
-                break;
-            case R.id.btn_start_plugin_service:
-                intent.setClass(getActivity(), PluginService.class);
-                getContext().startService(intent);
-                break;
-            case R.id.btn_stop_plugin_service:
-                intent.setClass(getActivity(), PluginService.class);
-                getContext().stopService(intent);
-                break;
-            case R.id.btn_bind_plugin_service:
-                intent.setClass(getActivity(), PluginService.class);
-                getContext().bindService(intent, mServiceConnection, Service.BIND_AUTO_CREATE);
-                break;
-            case R.id.btn_unbind_plugin_service:
-                unbindServiceSafe(mServiceConnection);
-                break;
-            default:
-                break;
+        int id = v.getId();
+        if (id == R.id.btn_start_plugin_intent_service) {
+            intent.setClass(getActivity(), PluginIntentService.class);
+            getContext().startService(intent);
+        } else if (id == R.id.btn_start_plugin_service) {
+            intent.setClass(getActivity(), PluginService.class);
+            getContext().startService(intent);
+        } else if (id == R.id.btn_stop_plugin_service) {
+            intent.setClass(getActivity(), PluginService.class);
+            getContext().stopService(intent);
+        } else if (id == R.id.btn_bind_plugin_service) {
+            intent.setClass(getActivity(), PluginService.class);
+            getContext().bindService(intent, mServiceConnection, Service.BIND_AUTO_CREATE);
+        } else if (id == R.id.btn_unbind_plugin_service) {
+            unbindServiceSafe(mServiceConnection);
         }
     }
 

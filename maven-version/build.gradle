@@ -17,12 +17,12 @@
 apply plugin: 'java'
 
 dependencies {
-    testCompile "junit:junit:${testVersion.junit}"
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation "junit:junit:${testVersion.junit}"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
 
 ext {
     POM_ARTIFACT_ID = 'maven-version'
@@ -30,5 +30,6 @@ ext {
     POM_DESC = 'maven artifact version comparison library'
 }
 
-apply from: file("${rootDir}/buildscript/publish_local.gradle")
-apply from: file("${rootDir}/buildscript/publish_bintray.gradle")
+// Temporarily disabled for build compatibility
+// apply from: file("${rootDir}/buildscript/publish_local.gradle")
+// apply from: file("${rootDir}/buildscript/publish_bintray.gradle")

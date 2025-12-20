@@ -16,7 +16,7 @@
 
 package com.wlqq.phantom.library.utils;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 
 public final class ClassUtils {

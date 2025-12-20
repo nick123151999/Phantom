@@ -21,8 +21,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,12 +52,11 @@ public class BroadcastFragment extends Fragment implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_send_broadcast:
-                Intent broadcast = new Intent(MainActivity.ACTION_BROADCAST_MSG);
-                broadcast.putExtra("result", "Broadcast : this is a broadcast msg.");
-                getContext().sendBroadcast(broadcast);
-                break;
+        int id = v.getId();
+        if (id == R.id.btn_send_broadcast) {
+            Intent broadcast = new Intent(MainActivity.ACTION_BROADCAST_MSG);
+            broadcast.putExtra("result", "Broadcast : this is a broadcast msg.");
+            getContext().sendBroadcast(broadcast);
         }
     }
 

@@ -15,11 +15,13 @@
  */
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.wlqq.phantom.plugin'
+// Temporarily disabled due to AGP 8+ incompatibility
+// apply plugin: 'com.wlqq.phantom.plugin'
 
 android {
     compileSdkVersion androidVersion.compileSdk
     buildToolsVersion androidVersion.buildTools
+    namespace 'com.wlqq.phantom.plugin.view'
 
     defaultConfig {
         applicationId "com.wlqq.phantom.plugin.view"
@@ -48,6 +50,15 @@ android {
             outputFileName = "${variant.applicationId}_${variant.versionName}.apk"
         }
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    // Enable non-transitive R classes to make R.id constants
+    androidResources {
+        generateLocaleConfig = false
+    }
 }
 
 dependencies {
@@ -56,11 +67,13 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "com.android.support:support-v4:${androidVersion.supportLib}"
+    // AndroidX dependencies
+    implementation "androidx.appcompat:appcompat:${androidxVersion.appcompat}"
+    implementation "androidx.core:core:${androidxVersion.core}"
 
     implementation 'io.github.shaobin0604:awesomelog:1.0.1'
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 def deletePluginInHost() {
@@ -101,8 +114,10 @@ afterEvaluate { project ->
     }
 }
 
+// Phantom plugin configuration - disabled due to AGP 8+ incompatibility
+/*
 phantomPluginConfig {
-    /*------------------------------ 剔除 support-v4 及其依赖的库 BEGIN ----------------------------*/
+    // 剔除 support-v4 及其依赖的库 BEGIN
     excludeLib "com.android.support:support-v4:${androidVersion.supportLib}"
     excludeLib "com.android.support:support-core-ui:${androidVersion.supportLib}"
     excludeLib "com.android.support:support-compat:${androidVersion.supportLib}"
@@ -133,13 +148,13 @@ phantomPluginConfig {
     excludeLib "android.arch.lifecycle:livedata-core:${androidVersion.archLib}"
     excludeLib "android.arch.core:common:${androidVersion.archLib}"
     excludeLib "android.arch.core:runtime:${androidVersion.archLib}"
-    /*------------------------------ 删除 support-v4 及其依赖的库  END  ----------------------------*/
+    // 删除 support-v4 及其依赖的库  END
 
-    /*------------------------------ 混淆配置 BEGIN ------------------------------*/
+    // 混淆配置 BEGIN
     libraryJarsProguardFile file('proguard-phantom.pro')
-    /*------------------------------ 混淆配置  END  ------------------------------*/
+    // 混淆配置  END
 
-    /*------------------------------ 快速安装插件配置 BEGIN ------------------------*/
+    // 快速安装插件配置 BEGIN
     // 宿主包名
     hostApplicationId = "com.wlqq.phantom.sample"
     // 宿主 launcher Activity full class name
@@ -149,5 +164,6 @@ phantomPluginConfig {
     pluginApplicationId = android.defaultConfig.applicationId
     // 插件版本名
     pluginVersionName = android.defaultConfig.versionName
-    /*------------------------------ 快速安装插件配置  END  -------------------------*/
+    // 快速安装插件配置  END
 }
+*/

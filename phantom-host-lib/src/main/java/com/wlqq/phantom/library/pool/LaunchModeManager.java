@@ -26,8 +26,8 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.wlqq.phantom.library.PhantomCore;
 import com.wlqq.phantom.library.log.LogReporter;

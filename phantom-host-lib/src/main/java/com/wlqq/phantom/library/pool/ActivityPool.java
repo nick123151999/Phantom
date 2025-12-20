@@ -18,7 +18,7 @@ package com.wlqq.phantom.library.pool;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import com.wlqq.phantom.library.utils.VLog;
 

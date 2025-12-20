@@ -20,8 +20,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,30 +55,21 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_start_stantard_activity:
-                startLaunchModeActivity(StandardActivity.class);
-                break;
-            case R.id.btn_start_singleinstance_activity:
-                startLaunchModeActivity(SingleInstanceActivity.class);
-                break;
-            case R.id.btn_start_singletop_activity:
-                startLaunchModeActivity(SingleTopActivity.class);
-                break;
-            case R.id.btn_start_singletask_activity:
-                startLaunchModeActivity(SingleTaskActivity.class);
-                break;
-            case R.id.btn_start_activity_in_another_plugin:
-                startOtherPluginActivity("com.wlqq.phantom.plugin.view", "com.wlqq.phantom.plugin.view.MainActivity");
-                break;
-            case R.id.btn_start_host_activity:
-                startHostActivity();
-                break;
-            case R.id.btn_start_system_activity:
-                startSystemActivity();
-                break;
-            default:
-                break;
+        int id = v.getId();
+        if (id == R.id.btn_start_stantard_activity) {
+            startLaunchModeActivity(StandardActivity.class);
+        } else if (id == R.id.btn_start_singleinstance_activity) {
+            startLaunchModeActivity(SingleInstanceActivity.class);
+        } else if (id == R.id.btn_start_singletop_activity) {
+            startLaunchModeActivity(SingleTopActivity.class);
+        } else if (id == R.id.btn_start_singletask_activity) {
+            startLaunchModeActivity(SingleTaskActivity.class);
+        } else if (id == R.id.btn_start_activity_in_another_plugin) {
+            startOtherPluginActivity("com.wlqq.phantom.plugin.view", "com.wlqq.phantom.plugin.view.MainActivity");
+        } else if (id == R.id.btn_start_host_activity) {
+            startHostActivity();
+        } else if (id == R.id.btn_start_system_activity) {
+            startSystemActivity();
         }
     }
 

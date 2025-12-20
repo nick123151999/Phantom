@@ -27,8 +27,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.ConditionVariable;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.util.TimingLogger;
 
@@ -257,12 +257,12 @@ public class PhantomCore {
     }
 
     /**
-     * 从宿主 android.support.v4.app.Fragment 中启动插件中的 Activity 必须显式指定 {@link ComponentName}
+     * 从宿主 androidx.fragment.app.Fragment 中启动插件中的 Activity 必须显式指定 {@link ComponentName}
      *
      * @param fragment The fragment to use
      * @param intent   插件 Activity，必须显式指定 {@link ComponentName}
      */
-    public void startActivity(@NonNull android.support.v4.app.Fragment fragment, @NonNull Intent intent) {
+    public void startActivity(@NonNull androidx.fragment.app.Fragment fragment, @NonNull Intent intent) {
         checkInit();
         fragment.startActivity(IntentUtils.wrapToActivityHostProxyIntentIfNeeded(intent));
     }
@@ -295,14 +295,14 @@ public class PhantomCore {
     }
 
     /**
-     * 从宿主 android.support.v4.app.Fragment 中启动 {@link Activity#startActivityForResult(Intent, int)}, 插件中的 Activity 必须显式
+     * 从宿主 androidx.fragment.app.Fragment 中启动 {@link Activity#startActivityForResult(Intent, int)}, 插件中的 Activity 必须显式
      * 指定 {@link ComponentName}
      *
      * @param fragment    The fragment to use
      * @param intent      插件 Activity，必须显式指定 {@link ComponentName}
      * @param requestCode the request code
      */
-    public void startActivityForResult(@NonNull android.support.v4.app.Fragment fragment, @NonNull Intent intent,
+    public void startActivityForResult(@NonNull androidx.fragment.app.Fragment fragment, @NonNull Intent intent,
             int requestCode) {
         checkInit();
         fragment.startActivityForResult(IntentUtils.wrapToActivityHostProxyIntentIfNeeded(intent), requestCode);
