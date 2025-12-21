@@ -596,6 +596,17 @@ public class PluginManager {
 
             try {
                 FileUtils.copyFile(apk, dstApk);
+                // Android 10+ (API 29+) 不允许从可写目录加载 DEX 文件
+                // 设置 APK 文件权限为只读 (0444 = r--r--r--)
+                if (!dstApk.setReadable(true, false)) {
+                    VLog.w("Failed to set %s as readable", dstApk.getName());
+                }
+                if (!dstApk.setWritable(false, false)) {
+                    VLog.w("Failed to set %s as non-writable", dstApk.getName());
+                }
+                if (!dstApk.setExecutable(false, false)) {
+                    VLog.w("Failed to set %s as non-executable", dstApk.getName());
+                }
             } catch (IOException e) {
                 final String msg = "install error, copyFile error base.apk: " + apkPath;
                 VLog.w(e, msg);
