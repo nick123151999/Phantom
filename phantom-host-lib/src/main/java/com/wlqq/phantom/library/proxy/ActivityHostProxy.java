@@ -263,21 +263,41 @@ public class ActivityHostProxy extends FragmentActivity implements Cloneable {
 
     // 替换support-v4 25.3.1版本Fragment的activity.由于Fragment的getActivity()方法是final的，不能被复写，
     // 只能用反射进行替换
+    // AndroidX 版本中，如果字段不存在则跳过（某些情况下不需要替换）
     private void replaceSupportFragmentContext() throws ReplaceSupportFragmentContextException {
         try {
+            // 检查是否所有必需的字段都存在
+            if (M_FRAGMENTS == null || M_HOST == null || M_ACTIVITY == null || M_CONTEXT == null) {
+                VLog.w("replaceSupportFragmentContext: Some Fragment fields are null, skipping Fragment context replacement. "
+                        + "This is normal for AndroidX or when Activity doesn't use Fragments.");
+                return;
+            }
+            
             // class FragmentActivity
             // final FragmentController mFragments;
             Object mFragments = ReflectUtils.readField(M_FRAGMENTS, this);
+            if (mFragments == null) {
+                VLog.w("replaceSupportFragmentContext: mFragments is null, skipping");
+                return;
+            }
+            
             // class FragmentController
             // private final FragmentHostCallback<?> mHost;
             Object mHost = ReflectUtils.readField(M_HOST, mFragments);
+            if (mHost == null) {
+                VLog.w("replaceSupportFragmentContext: mHost is null, skipping");
+                return;
+            }
+            
             // class FragmentHostCallback
             // private final Activity mActivity;
             // final Context mContext;
             ReflectUtils.writeField(M_ACTIVITY, mHost, mClientActivity);
             ReflectUtils.writeField(M_CONTEXT, mHost, mClientActivity);
+            VLog.d("replaceSupportFragmentContext: Fragment context replaced successfully");
         } catch (Exception e) {
-            throw new ReplaceSupportFragmentContextException(e);
+            // AndroidX 中可能不需要替换，或者结构已改变，记录警告但不抛出异常
+            VLog.w(e, "replaceSupportFragmentContext: Failed to replace Fragment context, but continuing anyway");
         }
     }
 

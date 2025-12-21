@@ -17,9 +17,13 @@
 package com.wlqq.phantom.plugin.view;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -40,6 +44,7 @@ import com.wlqq.phantom.library.proxy.PluginInterceptActivity;
 // 注意：这个 Activity 不使用 Fragment，所以继承 PluginInterceptActivity
 public class MainActivity extends PluginInterceptActivity implements View.OnClickListener {
 
+    private static final String CHANNEL_ID = "phantom_plugin_channel";
     private WebView mWebView;
 
     NotificationManagerCompat nm;
@@ -57,6 +62,23 @@ public class MainActivity extends PluginInterceptActivity implements View.OnClic
         initWebView();
 
         nm = NotificationManagerCompat.from(this);
+        createNotificationChannel();
+    }
+    
+    private void createNotificationChannel() {
+        // Android 8.0+ (API 26+) 需要创建 NotificationChannel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Phantom Plugin";
+            String description = "Phantom Plugin Notifications";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
     }
 
     private void initWebView() {
@@ -83,7 +105,7 @@ public class MainActivity extends PluginInterceptActivity implements View.OnClic
         if (id == R.id.btn_toast) {
             Toast.makeText(this, "host application id: " + getHostApplicationId(), Toast.LENGTH_SHORT).show();
         } else if (id == R.id.btn_notification) {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
             builder.setSmallIcon(getHostLauncherIconId());
             builder.setAutoCancel(true);
             builder.setContentInfo("ContentInfo")
@@ -99,14 +121,20 @@ public class MainActivity extends PluginInterceptActivity implements View.OnClic
             // 启动插件中的 Activity 需要使用 PhantomUtils#resolveActivity 将插件原始 Intent 包装成坑位 Activity
             final Intent proxyIntent = PhantomUtils.resolveActivity(intent, ActivityInfo.LAUNCH_MULTIPLE);
 
+            // Android 12+ (API 31+) 要求 PendingIntent 必须指定 FLAG_IMMUTABLE 或 FLAG_MUTABLE
+            int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                flags |= PendingIntent.FLAG_IMMUTABLE;
+            }
             PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
-                    0, proxyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    0, proxyIntent, flags);
             builder.setContentIntent(pendingIntent);
             builder.setWhen(System.currentTimeMillis());
             nm.notify(0xFF, builder.build());
         } else if (id == R.id.btn_webview) {
             mWebView.setVisibility(View.VISIBLE);
-            mWebView.loadUrl("http://www.baidu.com");
+            // 使用更简单的测试页面，避免复杂的 JavaScript 和跳转
+            mWebView.loadUrl("http://example.com");
         }
     }
 
