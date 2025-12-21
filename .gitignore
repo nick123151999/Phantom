@@ -1,11 +1,134 @@
-build/
-.idea/
+# ===========================
+# Gradle 相关
+# ===========================
 .gradle/
-.DS_Store
-*.iml
-local.properties
+build/
+*/build/
+*/*/build/
 
-# eclipse
+# Gradle Wrapper（保留 jar 文件）
+!gradle/wrapper/gradle-wrapper.jar
+
+# ===========================
+# Android 构建产物
+# ===========================
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+captures/
+output.json
+
+# ===========================
+# 本地配置文件
+# ===========================
+local.properties
+gradle.properties.local
+
+# ===========================
+# IDE 相关
+# ===========================
+
+# IntelliJ IDEA / Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+.idea_modules/
+out/
+
+# Eclipse
 .classpath
 .project
 .settings/
+bin/
+
+# VS Code
+.vscode/
+
+# ===========================
+# 操作系统文件
+# ===========================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ===========================
+# 日志和临时文件
+# ===========================
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.*.swp
+
+# ===========================
+# 备份文件
+# ===========================
+*.bak
+*.backup
+*.orig
+
+# ===========================
+# 编译产物
+# ===========================
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+!phantom-host-lib/libs/*.jar
+!phantom-host-lib/libs/**/*.so
+
+# ===========================
+# 测试和覆盖率报告
+# ===========================
+test-results/
+coverage/
+*.hprof
+
+# ===========================
+# 敏感文件（重要！）
+# ===========================
+*.jks
+*.keystore
+google-services.json
+firebase.json
+secrets.properties
+
+# ===========================
+# Phantom 特定
+# ===========================
+
+# 插件 APK（在 assets 目录中）
+phantom-sample/host/src/main/assets/*.apk
+phantom-sample/host/src/main/assets/plugins/*.apk
+
+# 生成的依赖文件
+**/compile_dependencies.txt
+**/provided_dependencies_v2.txt
+
+# ===========================
+# 其他
+# ===========================
+*.orig
+*.rej
+proguard/
+freeline/
+freeline_project_description.json

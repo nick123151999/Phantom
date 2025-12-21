@@ -33,8 +33,7 @@
         <!--
             为兼容现有的插件，非标准启动模式的坑位依然保持透明主题
             比如：司机版货源插件使用了非标准模式的透明 Activity
-            TODO
-            后续会考虑为非标准启动模式的 Activity 也提供非透明的坑位
+            注意：后续版本可能会为非标准启动模式的 Activity 也提供非透明的坑位
         -->
         <activity
             android:name=".proxy.ActivityHostProxy$ActivityProxySingleTop0"
