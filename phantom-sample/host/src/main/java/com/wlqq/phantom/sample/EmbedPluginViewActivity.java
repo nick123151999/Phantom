@@ -60,6 +60,10 @@ public class EmbedPluginViewActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            // 注意：由于 ClassLoader 隔离，宿主无法直接使用插件的 Fragment
+            // 插件的 Fragment 只能在插件内部使用
+            // 如果需要在宿主中嵌入插件 UI，请使用 View 而不是 Fragment
+            /*
             try {
                 Fragment fragment = (Fragment) iService.call("getPluginFragment", pluginContext);
 
@@ -73,6 +77,7 @@ public class EmbedPluginViewActivity extends AppCompatActivity {
             } catch (MethodNotFoundException e) {
                 e.printStackTrace();
             }
+            */
         }
     }
 }

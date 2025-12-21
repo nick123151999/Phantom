@@ -65,6 +65,7 @@ android {
 dependencies {
     compileOnly "com.wlqq.phantom:phantom-communication-lib:${phantomVersion.communicationLib}"
     compileOnly "com.wlqq.phantom:phantom-plugin-lib:${phantomVersion.pluginLib}"
+    compileOnly project(':phantom-host-lib')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

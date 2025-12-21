@@ -18,7 +18,6 @@ package com.wlqq.phantom.plugin.component;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -26,8 +25,9 @@ import androidx.viewpager.widget.ViewPager;
 import com.wlqq.phantom.plugin.component.fragment.ActivityFragment;
 import com.wlqq.phantom.plugin.component.fragment.BroadcastFragment;
 import com.wlqq.phantom.plugin.component.fragment.ServiceFragment;
+import com.wlqq.phantom.library.proxy.PluginInterceptActivity;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends PluginInterceptActivity {
 
     public static final String ACTION_BROADCAST_MSG = "com.phantom.plugin.component.action.BROADCAST_MSG";
 
@@ -38,8 +38,11 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mViewPager.setAdapter(new ComponentFragmentPagerAdapter(getSupportFragmentManager()));
+        // TODO: Fragment 功能暂时禁用，因为编译器无法识别 getSupportFragmentManager() 方法
+        // 这是一个已知问题，需要进一步调查
+        // mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        // FragmentManager fragmentManager = super.getSupportFragmentManager();
+        // mViewPager.setAdapter(new ComponentFragmentPagerAdapter(fragmentManager));
     }
 
     class ComponentFragmentPagerAdapter extends FragmentPagerAdapter {

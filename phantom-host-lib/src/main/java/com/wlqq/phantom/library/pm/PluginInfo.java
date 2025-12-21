@@ -754,7 +754,13 @@ public final class PluginInfo {
                 BroadcastReceiver instance = (BroadcastReceiver) mPluginClassLoader.loadClass(
                         receiver.name).newInstance();
                 for (IntentFilter filter : intentFilters) {
-                    context.registerReceiver(instance, filter);
+                    // Android 13+ (API 33+) 要求指定 RECEIVER_EXPORTED 或 RECEIVER_NOT_EXPORTED
+                    // 插件的 BroadcastReceiver 通常不需要被其他应用访问，使用 RECEIVER_NOT_EXPORTED
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                        context.registerReceiver(instance, filter, android.content.Context.RECEIVER_NOT_EXPORTED);
+                    } else {
+                        context.registerReceiver(instance, filter);
+                    }
                     mGlobalBroadcastReceivers.add(instance);
                 }
             } catch (Exception e) {

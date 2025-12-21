@@ -21,7 +21,6 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import android.view.View;
@@ -36,8 +35,10 @@ import com.wlqq.phantom.communication.IService;
 import com.wlqq.phantom.communication.MethodNotFoundException;
 import com.wlqq.phantom.communication.PhantomServiceManager;
 import com.wlqq.phantom.communication.PhantomUtils;
+import com.wlqq.phantom.library.proxy.PluginInterceptActivity;
 
-public class MainActivity extends FragmentActivity implements View.OnClickListener {
+// 注意：这个 Activity 不使用 Fragment，所以继承 PluginInterceptActivity
+public class MainActivity extends PluginInterceptActivity implements View.OnClickListener {
 
     private WebView mWebView;
 

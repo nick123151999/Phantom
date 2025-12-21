@@ -16,9 +16,9 @@
 
 package com.wlqq.phantom.plugin.component.app;
 
-import android.app.Application;
+import com.wlqq.phantom.library.proxy.PluginInterceptApplication;
 
-public class PluginComponentApplication extends Application {
+public class PluginComponentApplication extends PluginInterceptApplication {
     @Override
     public void onCreate() {
         super.onCreate();

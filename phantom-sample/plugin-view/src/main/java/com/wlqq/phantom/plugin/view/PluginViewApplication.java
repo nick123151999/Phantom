@@ -16,11 +16,10 @@
 
 package com.wlqq.phantom.plugin.view;
 
-import android.app.Application;
-
 import com.wlqq.phantom.communication.PhantomServiceManager;
+import com.wlqq.phantom.library.proxy.PluginInterceptApplication;
 
-public class PluginViewApplication extends Application {
+public class PluginViewApplication extends PluginInterceptApplication {
     @Override
     public void onCreate() {
         super.onCreate();
