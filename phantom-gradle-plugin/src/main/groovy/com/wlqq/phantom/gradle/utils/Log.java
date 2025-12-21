@@ -25,6 +25,10 @@ public class Log {
         System.out.println("[INFO][" + tag + "] " + msg);
     }
 
+    public static void w(String tag, String msg) {
+        System.out.println("[WARN][" + tag + "] " + msg);
+    }
+
     public static void e(String tag, String msg) {
         System.err.println("[ERROR][" + tag + "] " + msg);
     }

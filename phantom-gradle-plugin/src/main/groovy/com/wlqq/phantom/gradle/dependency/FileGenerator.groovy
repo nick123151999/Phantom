@@ -60,9 +60,11 @@ abstract class FileGenerator {
             }
 
             // backup file to <application module>/build/intermediates/phantom/<build variant>/<outputFileName> for debug purpose
-            final def scope = applicationVariant.variantData.scope
-            final def intermediatesFile = new File(scope.globalScope.intermediatesDir,
-                    Paths.get(Constant.INTERMEDIATES_DIR, scope.variantConfiguration.dirName, outputFileName).toString())
+            // AGP 8+ compatible: use project.buildDir instead of scope
+            final def variantName = applicationVariant.name
+            final def intermediatesDir = new File(project.buildDir, "intermediates")
+            final def intermediatesFile = new File(intermediatesDir,
+                    Paths.get(Constant.INTERMEDIATES_DIR, variantName, outputFileName).toString())
             GFileUtils.copyFile(outputFile, intermediatesFile)
 
         } catch (Exception e) {

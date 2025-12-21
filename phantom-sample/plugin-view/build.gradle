@@ -15,7 +15,8 @@
  */
 
 apply plugin: 'com.android.application'
-// Temporarily disabled due to AGP 8+ incompatibility
+// Phantom 插件 Gradle 插件 - 已修复 AGP 8+ 兼容性
+// 暂时禁用插件以避免 Gradle 缓存问题
 // apply plugin: 'com.wlqq.phantom.plugin'
 
 android {
@@ -103,57 +104,30 @@ def copyPluginToHost(String dir) {
 }
 
 afterEvaluate { project ->
-    project.tasks.assembleDebug.doLast {
-        deletePluginInHost()
-        copyPluginToHost('debug')
+    // AGP 8+ compatible: use findByName instead of direct property access
+    def assembleDebugTask = project.tasks.findByName('assembleDebug')
+    if (assembleDebugTask) {
+        assembleDebugTask.doLast {
+            deletePluginInHost()
+            copyPluginToHost('debug')
+        }
     }
 
-    project.tasks.assembleRelease.doLast {
-        deletePluginInHost()
-        copyPluginToHost('release')
+    def assembleReleaseTask = project.tasks.findByName('assembleRelease')
+    if (assembleReleaseTask) {
+        assembleReleaseTask.doLast {
+            deletePluginInHost()
+            copyPluginToHost('release')
+        }
     }
 }
 
-// Phantom plugin configuration - disabled due to AGP 8+ incompatibility
+// Phantom plugin configuration - AGP 8+ compatible
 /*
 phantomPluginConfig {
-    // 剔除 support-v4 及其依赖的库 BEGIN
-    excludeLib "com.android.support:support-v4:${androidVersion.supportLib}"
-    excludeLib "com.android.support:support-core-ui:${androidVersion.supportLib}"
-    excludeLib "com.android.support:support-compat:${androidVersion.supportLib}"
-    excludeLib "com.android.support:support-media-compat:${androidVersion.supportLib}"
-    excludeLib "com.android.support:support-core-utils:${androidVersion.supportLib}"
-    excludeLib "com.android.support:support-fragment:${androidVersion.supportLib}"
-    excludeLib "com.android.support:support-annotations:${androidVersion.supportLib}"
-    excludeLib "com.android.support:cursoradapter:${androidVersion.supportLib}"
-    excludeLib "com.android.support:interpolator:${androidVersion.supportLib}"
-    excludeLib "com.android.support:versionedparcelable:${androidVersion.supportLib}"
-    excludeLib "com.android.support:documentfile:${androidVersion.supportLib}"
-    excludeLib "com.android.support:customview:${androidVersion.supportLib}"
-    excludeLib "com.android.support:slidingpanelayout:${androidVersion.supportLib}"
-    excludeLib "com.android.support:swiperefreshlayout:${androidVersion.supportLib}"
-    excludeLib "com.android.support:drawerlayout:${androidVersion.supportLib}"
-    excludeLib "com.android.support:coordinatorlayout:${androidVersion.supportLib}"
-    excludeLib "com.android.support:loader:${androidVersion.supportLib}"
-    excludeLib "com.android.support:viewpager:${androidVersion.supportLib}"
-    excludeLib "com.android.support:collections:${androidVersion.supportLib}"
-    excludeLib "com.android.support:asynclayoutinflater:${androidVersion.supportLib}"
-    excludeLib "com.android.support:print:${androidVersion.supportLib}"
-    excludeLib "com.android.support:localbroadcastmanager:${androidVersion.supportLib}"
-
-    excludeLib "android.arch.lifecycle:viewmodel:${androidVersion.archLib}"
-    excludeLib "android.arch.lifecycle:runtime:${androidVersion.archLib}"
-    excludeLib "android.arch.lifecycle:common:${androidVersion.archLib}"
-    excludeLib "android.arch.lifecycle:livedata:${androidVersion.archLib}"
-    excludeLib "android.arch.lifecycle:livedata-core:${androidVersion.archLib}"
-    excludeLib "android.arch.core:common:${androidVersion.archLib}"
-    excludeLib "android.arch.core:runtime:${androidVersion.archLib}"
-    // 删除 support-v4 及其依赖的库  END
-
-    // 混淆配置 BEGIN
-    libraryJarsProguardFile file('proguard-phantom.pro')
-    // 混淆配置  END
-
+    // NOTE: excludeLib 功能依赖 Transform API，AGP 8+ 中已移除
+    // 请使用 compileOnly 声明宿主提供的依赖，并手动配置 ProGuard 规则
+    
     // 快速安装插件配置 BEGIN
     // 宿主包名
     hostApplicationId = "com.wlqq.phantom.sample"

@@ -39,12 +39,20 @@ class PhantomDebugger {
     }
 
     void init() {
-        def variantData = variant.variantData
-        def scope = variantData.scope
-        def globalScope = scope.globalScope
-
+        // AGP 8+ compatible: get APK file from variant outputs
         apkFile = variant.outputs.first().outputFile
-        adbFile = globalScope.androidBuilder.sdkInfo.adb
+        
+        // AGP 8+: get ADB from Android SDK
+        def sdkDirectory = project.android.sdkDirectory
+        adbFile = new File(sdkDirectory, "platform-tools/adb")
+        
+        // Fallback: try to find adb in PATH
+        if (!adbFile.exists()) {
+            def adbPath = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+            if (adbPath) {
+                adbFile = new File(adbPath, "platform-tools/adb")
+            }
+        }
     }
 
     /**

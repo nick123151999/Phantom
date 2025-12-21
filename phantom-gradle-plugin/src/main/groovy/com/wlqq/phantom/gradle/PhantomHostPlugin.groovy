@@ -18,7 +18,6 @@ package com.wlqq.phantom.gradle
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.wlqq.phantom.gradle.dependency.ComparableVersion
 import com.wlqq.phantom.gradle.dependency.CompileDependenciesFileGenerator
 import com.wlqq.phantom.gradle.utils.Log
@@ -41,25 +40,30 @@ class PhantomHostPlugin implements Plugin<Project> {
             Log.i(TAG, "Your Gradle Android Plugin version is: ${version}")
             project.extensions.extraProperties[Constant.AGP_VERSION] = version
 
-            android.applicationVariants.all { ApplicationVariantImpl variant ->
-                def variantData = variant.variantData
-                def scope = variantData.scope
+            android.applicationVariants.all { variant ->
+                // AGP 8+ compatible: use variant name directly instead of scope
+                def variantName = variant.name.capitalize()
 
                 // builtin_plugin_list.csv generate task
-                def generateCompileDependenciesTaskName = scope.getTaskName(Constant.TASK_GENERATE, 'CompileDependencies')
+                def generateCompileDependenciesTaskName = "generate${variantName}CompileDependencies"
                 def generateCompileDependenciesTask = project.task(generateCompileDependenciesTaskName)
                 generateCompileDependenciesTask.group = Constant.TASKS_GROUP
 
-                // depends on mergeAssets Task
-                def mergeAssetsTaskName = variant.variantData.scope.mergeAssetsTask.name
-                def mergeAssetsTask = project.tasks.getByName(mergeAssetsTaskName)
+                // depends on mergeAssets Task - AGP 8+ compatible
+                def mergeAssetsTaskName = "merge${variantName}Assets"
+                def mergeAssetsTask = project.tasks.findByName(mergeAssetsTaskName)
+                
                 if (mergeAssetsTask) {
                     generateCompileDependenciesTask.doLast {
-                        new CompileDependenciesFileGenerator(project, variant, mergeAssetsTask.outputDir, 'compile_dependencies.txt').generateFile()
+                        // AGP 8+: use variant.mergeAssetsProvider.get().outputDir
+                        def outputDir = variant.mergeAssetsProvider.get().outputDir.get().asFile
+                        new CompileDependenciesFileGenerator(project, variant, outputDir, 'compile_dependencies.txt').generateFile()
                     }
 
                     generateCompileDependenciesTask.dependsOn mergeAssetsTask
                     mergeAssetsTask.finalizedBy generateCompileDependenciesTask
+                } else {
+                    Log.w(TAG, "mergeAssetsTask not found for variant: ${variant.name}")
                 }
             }
         }

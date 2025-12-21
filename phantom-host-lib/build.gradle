@@ -77,9 +77,9 @@ dependencies {
 
 ext {
     POM_ARTIFACT_ID = 'phantom-host-lib'
-    POM_VERSION_NAME = android.defaultConfig.versionName
+    POM_VERSION_NAME = phantomVersion.hostLib
     POM_DESC = 'phantom host core library'
 }
 
-// Temporarily disabled for build compatibility
-// apply from: file("${rootDir}/buildscript/publish_bintray.gradle")
+// Use Maven Publish Plugin instead of deprecated Bintray
+apply from: file("${rootDir}/buildscript/publish_maven.gradle")

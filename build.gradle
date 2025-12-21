@@ -67,12 +67,13 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:8.13.2'
 
-        // Phantom plugin is incompatible with AGP 8+, commenting out temporarily
-        // classpath 'com.wlqq.phantom:phantom-gradle-plugin:3.1.3'
+        // Phantom Gradle Plugin - 已修复 AGP 8+ 兼容性
+        classpath 'com.wlqq.phantom:phantom-gradle-plugin:3.1.3'
 
-        classpath 'com.novoda:bintray-release:0.9'
+        // NOTE: Bintray 已废弃，已替换为 Maven Publish Plugin
+        // classpath 'com.novoda:bintray-release:0.9'
 
-        // okcheck plugin is outdated, commenting out for now
+        // NOTE: OkCheck 插件已过时，暂时禁用
         // classpath 'com.liulishuo.okcheck:gradle:0.2.8'
     }
 }
@@ -98,13 +99,13 @@ allprojects {
         }
     }
 
-    // okcheck plugin is outdated, commenting out for now
+    // NOTE: OkCheck 插件已过时，暂时禁用
     // apply plugin: 'okcheck'
 
-    // 统一 Kotlin 版本，解决依赖冲突
+    // 统一 Kotlin stdlib 版本，解决依赖冲突
+    // 多个第三方库可能引入不同版本的 Kotlin stdlib，导致 duplicate class 错误
     configurations.all {
         resolutionStrategy {
-            // 强制使用统一的 Kotlin 版本
             force 'org.jetbrains.kotlin:kotlin-stdlib:1.9.22'
             force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.22'
             force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22'

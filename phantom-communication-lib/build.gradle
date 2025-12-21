@@ -34,6 +34,5 @@ ext {
     POM_DESC = 'phantom communication library'
 }
 
-// Temporarily disabled for build compatibility
-// apply from: file("${rootDir}/buildscript/publish_local.gradle")
-// apply from: file("${rootDir}/buildscript/publish_bintray.gradle")
+// Use Maven Publish Plugin instead of deprecated Bintray
+apply from: file("${rootDir}/buildscript/publish_maven.gradle")

@@ -17,110 +17,113 @@
 package com.wlqq.phantom.gradle.dependency;
 
 import com.android.build.gradle.internal.api.ApplicationVariantImpl;
-import com.android.build.gradle.internal.ide.ArtifactDependencyGraph;
-import com.android.build.gradle.internal.ide.ModelBuilder;
-import com.android.build.gradle.internal.publishing.AndroidArtifacts;
-
-import com.google.common.collect.ImmutableMap;
 import com.wlqq.phantom.gradle.Constant;
+import com.wlqq.phantom.gradle.utils.Log;
 
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
-import org.gradle.api.artifacts.ResolvableDependencies;
 import org.gradle.api.artifacts.component.ComponentIdentifier;
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier;
-import org.gradle.api.artifacts.result.ResolutionResult;
+import org.gradle.api.artifacts.result.ResolvedArtifactResult;
 import org.gradle.api.artifacts.result.ResolvedComponentResult;
-import org.joor.Reflect;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
 
+/**
+ * AGP 8+ compatible version - uses only public Gradle APIs
+ * Generates compile_dependencies.txt for host application
+ */
 public class CompileDependenciesFileGenerator extends FileGenerator {
-    private ComparableVersion agpVersion;
+    private static final String TAG = Constant.HOST_TAG;
 
     public CompileDependenciesFileGenerator(Project project, ApplicationVariantImpl variant, File outputFileDir,
             String outputFileName) {
-        super(Constant.HOST_TAG, project, variant, outputFileDir, outputFileName);
+        super(TAG, project, variant, outputFileDir, outputFileName);
         this.project = project;
         this.applicationVariant = variant;
-        this.agpVersion = (ComparableVersion) project.getExtensions().getExtraProperties().get(Constant.AGP_VERSION);
     }
 
     @Override
     protected String getContent() {
-        Set<String> dependencies;
-
-        if (agpVersion.greaterThanOrEqualTo(Constant.AGP_3_1)) {
-            dependencies = getCompileArtifactsForAgp31x();
-        } else if (agpVersion.greaterThanOrEqualTo(Constant.AGP_3_0)) {
-            dependencies = getCompileArtifactsForAgp30x();
-        } else {
-            dependencies = getCompileArtifactsForAgp2x();
-        }
-
+        Set<String> dependencies = getCompileArtifacts();
+        Log.i(TAG, "Found " + dependencies.size() + " compile dependencies");
         return String.join("\n", dependencies);
     }
 
-    // for gradle android plugin 2.x.x
-    private Set<String> getCompileArtifactsForAgp2x() {
+    /**
+     * Get compile artifacts using public Gradle API (AGP 8+ compatible)
+     * Uses variant's compileClasspath configuration
+     */
+    private Set<String> getCompileArtifacts() {
         Set<String> compileLibs = new HashSet<>();
 
-        Configuration configuration = project.getConfigurations().getByName("compile");
-        if (configuration.isCanBeResolved()) {
-            ResolvableDependencies incoming = configuration.getIncoming();
-            ResolutionResult resolutionResult = incoming.getResolutionResult();
-            Set<ResolvedComponentResult> components = resolutionResult.getAllComponents();
+        try {
+            // AGP 8+: Use variant's compile configuration
+            // Try multiple configuration names for compatibility
+            Configuration configuration = getCompileConfiguration();
+            
+            if (configuration != null && configuration.isCanBeResolved()) {
+                Log.i(TAG, "Resolving dependencies from configuration: " + configuration.getName());
+                
+                // Get all resolved components
+                Set<ResolvedComponentResult> components = 
+                    configuration.getIncoming().getResolutionResult().getAllComponents();
 
-            for (ResolvedComponentResult result : components) {
-                ModuleVersionIdentifier identifier = result.getModuleVersion();
-                if (identifier != null && !"unspecified".equals(identifier.getVersion())) {
-                    compileLibs.add(
-                            String.join(":", identifier.getGroup(), identifier.getName(), identifier.getVersion()));
+                for (ResolvedComponentResult component : components) {
+                    ModuleVersionIdentifier moduleVersion = component.getModuleVersion();
+                    if (moduleVersion != null && !"unspecified".equals(moduleVersion.getVersion())) {
+                        String dependency = String.join(":", 
+                            moduleVersion.getGroup(), 
+                            moduleVersion.getName(), 
+                            moduleVersion.getVersion());
+                        compileLibs.add(dependency);
+                        Log.i(TAG, "  - " + dependency);
+                    }
                 }
+            } else {
+                Log.w(TAG, "Compile configuration not found or not resolvable");
             }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting compile artifacts: " + e.getMessage());
+            e.printStackTrace();
         }
 
         return compileLibs;
     }
 
-    // for gradle android plugin 3.0.x
-    private Set<String> getCompileArtifactsForAgp31x() {
-        ImmutableMap<String, String> buildMapping = ModelBuilder.computeBuildMapping(project.getGradle());
-        final Set<ArtifactDependencyGraph.HashableResolvedArtifactResult> allArtifacts =
-                ArtifactDependencyGraph.getAllArtifacts(
-                        applicationVariant.getVariantData().getScope(),
-                        AndroidArtifacts.ConsumedConfigType.COMPILE_CLASSPATH,
-                        null,
-                        buildMapping);
-        return getMavenArtifacts(allArtifacts);
-    }
+    /**
+     * Get the appropriate compile configuration for the variant
+     * Tries multiple configuration names for compatibility across AGP versions
+     */
+    private Configuration getCompileConfiguration() {
+        String variantName = applicationVariant.getName();
+        
+        // Try different configuration names in order of preference
+        String[] configNames = {
+            variantName + "CompileClasspath",           // AGP 3.0+
+            variantName + "RuntimeClasspath",           // Fallback
+            "implementation",                            // AGP 3.0+
+            "compile",                                   // AGP 2.x (deprecated)
+            "compileClasspath"                          // Generic
+        };
 
-    // for gradle android plugin 3.1.x
-    private Set<String> getCompileArtifactsForAgp30x() {
-        final Set<ArtifactDependencyGraph.HashableResolvedArtifactResult> allArtifacts = Reflect.on("com.android.build.gradle.internal.ide.ArtifactDependencyGraph")
-                .call("getAllArtifacts",
-                        applicationVariant.getVariantData().getScope(),
-                        AndroidArtifacts.ConsumedConfigType.COMPILE_CLASSPATH,
-                        null)
-                .get();
-        return getMavenArtifacts(allArtifacts);
-    }
-
-    private Set<String> getMavenArtifacts(Set<ArtifactDependencyGraph.HashableResolvedArtifactResult> allArtifacts) {
-        Set<String> deps = new HashSet<>();
-
-        for (ArtifactDependencyGraph.HashableResolvedArtifactResult result : allArtifacts) {
-            ComponentIdentifier id = result.getId().getComponentIdentifier();
-            if (id instanceof ModuleComponentIdentifier) {
-                ModuleComponentIdentifier module = (ModuleComponentIdentifier) id;
-                deps.add(String.join(":", module.getGroup(), module.getModule(), module.getVersion()));
+        for (String configName : configNames) {
+            try {
+                Configuration config = project.getConfigurations().findByName(configName);
+                if (config != null) {
+                    Log.i(TAG, "Using configuration: " + configName);
+                    return config;
+                }
+            } catch (Exception e) {
+                // Continue to next configuration name
             }
         }
 
-        return deps;
+        Log.w(TAG, "No suitable compile configuration found for variant: " + variantName);
+        return null;
     }
 }

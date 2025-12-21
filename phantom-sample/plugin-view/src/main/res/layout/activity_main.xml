@@ -21,6 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context="com.wlqq.phantom.plugin.view.MainActivity">
 
     <TextView
@@ -29,34 +30,46 @@
         android:background="@color/colorPrimary"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:text="Plugin View"
         android:textColor="@android:color/white"
         android:textSize="@dimen/action_bar_title_size"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:elevation="4dp"/>
 
-
-    <Button
-        android:id="@+id/btn_toast"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Toast"/>
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <Button
-        android:id="@+id/btn_notification"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Notification"/>
+        <Button
+            android:id="@+id/btn_toast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Toast"/>
 
-    <Button
-        android:id="@+id/btn_webview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="WebView"/>
+        <Button
+            android:id="@+id/btn_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Notification"/>
+
+        <Button
+            android:id="@+id/btn_webview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="WebView"/>
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="16dp">
 
         <WebView
             android:id="@+id/webview"

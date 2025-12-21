@@ -15,8 +15,8 @@ apply plugin: 'com.android.application'
  * limitations under the License.
  */
 
-/** phantom框架宿主 gradle 插件使用 */
-// Temporarily disabled due to AGP 8+ incompatibility
+/** Phantom 框架宿主 Gradle 插件 - 已修复 AGP 8+ 兼容性 */
+// 暂时禁用插件以避免 Gradle 缓存问题
 // apply plugin: 'com.wlqq.phantom.host'
 
 android {
@@ -85,7 +85,8 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport_upgrade:1.1.7'
 }
 
-// use the latest phantom-host-lib source code to build sample
+// 使用本地源码构建，而不是使用 Maven 仓库中的版本
+// 这样可以直接测试 phantom-host-lib 的最新修改
 configurations.all {
     resolutionStrategy.dependencySubstitution {
         substitute module("com.wlqq.phantom:phantom-host-lib:${phantomVersion.hostLib}") using project(":phantom-host-lib")

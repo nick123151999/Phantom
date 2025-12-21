@@ -1,5 +1,3 @@
-
-
 /*
  * Copyright (C) 2017-2019 Manbang Group
  *
@@ -18,13 +16,13 @@
 
 package com.wlqq.phantom.gradle
 
+import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.wlqq.phantom.gradle.debugger.PhantomDebugger
 import com.wlqq.phantom.gradle.dependency.ComparableVersion
 import com.wlqq.phantom.gradle.dependency.ProvidedDependenciesFileGenerator
-import com.wlqq.phantom.gradle.exclude.ExcludeClassesTransform
-import com.wlqq.phantom.gradle.replace.ReplaceSuperTransform
 import com.wlqq.phantom.gradle.utils.Log
 import com.wlqq.phantom.gradle.utils.VersionUtils
 import org.gradle.api.Plugin
@@ -52,33 +50,39 @@ class PhantomPluginPlugin implements Plugin<Project> {
             project.extensions.extraProperties[Constant.AGP_VERSION] = version
 
             android.applicationVariants.all { variant ->
-                def variantData = variant.variantData
-                def scope = variantData.scope
+                // AGP 8+ compatible: use variant name directly
+                def variantName = variant.name.capitalize()
 
                 if (config.genProvidedDeps) {
                     // provided_dependencies_v2.txt generate task
-                    def generateProvidedDependenciesTaskName = scope.getTaskName(Constant.TASK_GENERATE, 'ProvidedDependencies')
+                    def generateProvidedDependenciesTaskName = "generate${variantName}ProvidedDependencies"
                     def generateProvidedDependenciesTask = project.task(generateProvidedDependenciesTaskName)
                     generateProvidedDependenciesTask.group = Constant.TASKS_GROUP
 
-                    //depends on mergeAssets Task
-                    def mergeAssetsTaskName = variant.getVariantData().getScope().getMergeAssetsTask().name
-                    def mergeAssetsTask = project.tasks.getByName(mergeAssetsTaskName)
+                    // depends on mergeAssets Task - AGP 8+ compatible
+                    def mergeAssetsTaskName = "merge${variantName}Assets"
+                    def mergeAssetsTask = project.tasks.findByName(mergeAssetsTaskName)
+                    
                     if (mergeAssetsTask) {
                         generateProvidedDependenciesTask.doLast {
-                            new ProvidedDependenciesFileGenerator(project, variant, mergeAssetsTask.outputDir, 'provided_dependencies_v2.txt').generateFile()
+                            // AGP 8+: use variant.mergeAssetsProvider.get().outputDir
+                            def outputDir = variant.mergeAssetsProvider.get().outputDir.get().asFile
+                            new ProvidedDependenciesFileGenerator(project, variant, outputDir, 'provided_dependencies_v2.txt').generateFile()
                         }
 
                         generateProvidedDependenciesTask.dependsOn mergeAssetsTask
                         mergeAssetsTask.finalizedBy generateProvidedDependenciesTask
+                    } else {
+                        Log.w(TAG, "mergeAssetsTask not found for variant: ${variant.name}")
                     }
                 }
 
                 PhantomDebugger pluginDebugger = new PhantomDebugger(project, config, variant)
 
-                def assembleTask = variant.getAssemble()
+                def assembleTask = variant.assembleProvider.get()
 
-                def installPluginTaskName = scope.getTaskName(Constant.TASK_INSTALL_PLUGIN, "")
+                // AGP 8+ compatible task naming
+                def installPluginTaskName = "phInstallPlugin${variantName}"
                 def installPluginTask = project.task(installPluginTaskName)
 
                 installPluginTask.doLast {
@@ -105,8 +109,25 @@ class PhantomPluginPlugin implements Plugin<Project> {
                 }
             }
 
-            project.android.registerTransform(new ExcludeClassesTransform(project))
-            project.android.registerTransform(new ReplaceSuperTransform(project))
+            // AGP 8+: Transform API has been removed
+            // ExcludeClassesTransform and ReplaceSuperTransform cannot be used
+            // 
+            // Alternative solutions:
+            // 1. Manual ProGuard rules for excluding classes
+            // 2. Use Artifact API for class transformation (requires significant refactoring)
+            // 3. Use bytecode manipulation at build time with custom tasks
+            //
+            // For now, these features are disabled. Users should:
+            // - Use 'compileOnly' for dependencies provided by host
+            // - Manually configure ProGuard rules to exclude common libraries
+            // - Ensure plugin classes extend correct base classes
+            
+            Log.i(TAG, "=".repeat(80))
+            Log.i(TAG, "NOTICE: Transform API features are disabled in AGP 8+")
+            Log.i(TAG, "  - ExcludeClassesTransform: Use 'compileOnly' + ProGuard rules instead")
+            Log.i(TAG, "  - ReplaceSuperTransform: Ensure plugin classes extend correct base classes")
+            Log.i(TAG, "  - See documentation for manual configuration guide")
+            Log.i(TAG, "=".repeat(80))
         }
     }
 
