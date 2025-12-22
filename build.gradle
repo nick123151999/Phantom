@@ -54,7 +54,6 @@ ext {
 
 buildscript {
     repositories {
-//        mavenLocal()
         maven {
             url 'https://maven.aliyun.com/repository/public/'
         }
@@ -80,7 +79,6 @@ buildscript {
 
 allprojects {
     repositories {
-//        mavenLocal()
         maven {
             url 'https://maven.aliyun.com/repository/public/'
         }
