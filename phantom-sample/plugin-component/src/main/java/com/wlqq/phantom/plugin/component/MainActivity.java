@@ -1,12 +1,14 @@
 package com.wlqq.phantom.plugin.component;
 
 import android.os.Bundle;
+import android.view.View;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.wlqq.phantom.plugin.component.fragment.ActivityFragment;
 import com.wlqq.phantom.plugin.component.fragment.BroadcastFragment;
 import com.wlqq.phantom.plugin.component.fragment.ServiceFragment;
@@ -17,11 +19,22 @@ public class MainActivity extends PluginInterceptActivity {
     public static final String ACTION_BROADCAST_MSG = "com.phantom.plugin.component.action.BROADCAST_MSG";
 
     private ViewPager mViewPager;
+    private MaterialToolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mToolbar = findViewById(R.id.toolbar);
+        
+        // 设置返回按钮
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         // 初始化 ViewPager 和 Fragment
         mViewPager = (ViewPager) findViewById(R.id.view_pager);

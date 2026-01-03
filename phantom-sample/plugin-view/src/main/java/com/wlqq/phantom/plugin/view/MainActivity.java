@@ -19,6 +19,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.qihoo360.replugin.sample.webview.utils.WebViewResourceHelper;
 import com.wlqq.phantom.communication.IService;
 import com.wlqq.phantom.communication.MethodNotFoundException;
@@ -31,6 +32,7 @@ public class MainActivity extends PluginInterceptActivity implements View.OnClic
 
     private static final String CHANNEL_ID = "phantom_plugin_channel";
     private WebView mWebView;
+    private MaterialToolbar mToolbar;
 
     NotificationManagerCompat nm;
 
@@ -38,6 +40,16 @@ public class MainActivity extends PluginInterceptActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mToolbar = findViewById(R.id.toolbar);
+        
+        // 设置返回按钮
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         findViewById(R.id.btn_toast).setOnClickListener(this);
         findViewById(R.id.btn_notification).setOnClickListener(this);

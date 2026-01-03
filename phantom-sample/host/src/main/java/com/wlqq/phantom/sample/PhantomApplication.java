@@ -20,6 +20,7 @@ public class PhantomApplication extends Application {
         PhantomCore.getInstance().init(this, new PhantomCore.Config()
                 .setDebug(BuildConfig.DEBUG)
                 .setLogLevel(BuildConfig.DEBUG ? android.util.Log.VERBOSE : android.util.Log.WARN)
+                .setCheckSignature(false)  // 关闭签名验证（开发测试用）
                 .addPhantomService(new HostInfoService())
                 .setLogReporter(new LogReporterImpl()));
     }

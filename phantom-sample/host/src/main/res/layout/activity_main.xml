@@ -10,6 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
         android:elevation="4dp"
         app:elevation="4dp">
 
@@ -20,6 +21,7 @@
             android:background="@color/md_theme_primary"
             app:title="Phantom 插件管理"
             app:titleTextColor="@color/md_theme_onPrimary"
+            app:logo="@mipmap/ic_launcher"
             app:elevation="4dp"/>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -66,6 +68,90 @@
                         android:textSize="14sp"
                         android:textColor="@color/md_theme_onPrimaryContainer"
                         android:alpha="0.7"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 上传 APK 卡片 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="12dp"
+                app:strokeWidth="2dp"
+                app:strokeColor="@color/md_theme_primary">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📤 上传自定义插件"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/md_theme_onSurface"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="选择并安装第三方 APK 插件"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_onSurfaceVariant"/>
+
+                    <TextView
+                        android:id="@+id/tv_selected_apk"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:padding="12dp"
+                        android:background="@color/md_theme_surfaceVariant"
+                        android:text="未选择文件"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_onSurfaceVariant"
+                        android:visibility="gone"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_select_apk"
+                            android:layout_width="0dp"
+                            android:layout_height="56dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            android:text="选择 APK"
+                            android:textSize="15sp"
+                            app:icon="@android:drawable/ic_menu_upload"
+                            app:iconGravity="start"
+                            app:cornerRadius="12dp"
+                            style="@style/Widget.MaterialComponents.Button"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_install_and_launch"
+                            android:layout_width="0dp"
+                            android:layout_height="56dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            android:text="安装并启动"
+                            android:textSize="15sp"
+                            android:enabled="false"
+                            app:icon="@android:drawable/ic_media_play"
+                            app:iconGravity="start"
+                            app:cornerRadius="12dp"
+                            style="@style/Widget.MaterialComponents.Button"/>
+
+                    </LinearLayout>
 
                 </LinearLayout>
 

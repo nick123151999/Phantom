@@ -3,6 +3,7 @@ package com.wlqq.phantom.sample;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -22,14 +23,24 @@ import com.wlqq.phantom.library.PhantomCore;
 import com.wlqq.phantom.library.pm.InstallResult;
 import com.wlqq.phantom.library.pm.PluginInfo;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int REQUEST_CODE_SELECT_APK = 1001;
+    
     private Button mBtnEmbedPluginView;
+    private Button mBtnSelectApk;
+    private Button mBtnInstallAndLaunch;
+    private TextView mTvSelectedApk;
     private RecyclerView mRvPluginList;
     private List<Pair<String, PluginInfo>> mPluginList;
+    private Uri mSelectedApkUri;
+    private String mSelectedApkPath;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,11 +54,148 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, EmbedPluginViewActivity.class));
             }
         });
+        
+        mTvSelectedApk = (TextView) findViewById(R.id.tv_selected_apk);
+        mBtnSelectApk = (Button) findViewById(R.id.btn_select_apk);
+        mBtnInstallAndLaunch = (Button) findViewById(R.id.btn_install_and_launch);
+        
+        mBtnSelectApk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectApkFile();
+            }
+        });
+        
+        mBtnInstallAndLaunch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                installAndLaunchSelectedApk();
+            }
+        });
+        
         mRvPluginList = (RecyclerView) findViewById(R.id.rv_plugin_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRvPluginList.setLayoutManager(layoutManager);
         mRvPluginList.addItemDecoration(new DividerItemDecoration(this, layoutManager.getOrientation()));
         initPluginListAsync();
+    }
+    
+    private void selectApkFile() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("application/vnd.android.package-archive");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult(Intent.createChooser(intent, "选择 APK 文件"), REQUEST_CODE_SELECT_APK);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "请安装文件管理器", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SELECT_APK && resultCode == RESULT_OK) {
+            if (data != null && data.getData() != null) {
+                mSelectedApkUri = data.getData();
+                String fileName = getFileNameFromUri(mSelectedApkUri);
+                mTvSelectedApk.setText("已选择: " + fileName);
+                mTvSelectedApk.setVisibility(View.VISIBLE);
+                mBtnInstallAndLaunch.setEnabled(true);
+            }
+        }
+    }
+    
+    private String getFileNameFromUri(Uri uri) {
+        String path = uri.getPath();
+        if (path != null) {
+            int lastSlash = path.lastIndexOf('/');
+            if (lastSlash != -1) {
+                return path.substring(lastSlash + 1);
+            }
+        }
+        return "未知文件";
+    }
+    
+    private void installAndLaunchSelectedApk() {
+        if (mSelectedApkUri == null) {
+            Toast.makeText(this, "请先选择 APK 文件", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        new AsyncTask<Void, Void, PluginInfo>() {
+            private ProgressDialog mProgressDialog;
+            private String errorMessage;
+            
+            @Override
+            protected void onPreExecute() {
+                mProgressDialog = ProgressDialog.show(MainActivity.this, "请稍候",
+                        "正在安装插件...", true, false);
+            }
+            
+            @Override
+            protected PluginInfo doInBackground(Void... voids) {
+                try {
+                    File cacheDir = new File(getCacheDir(), "uploaded_plugins");
+                    if (!cacheDir.exists()) {
+                        cacheDir.mkdirs();
+                    }
+                    
+                    String fileName = getFileNameFromUri(mSelectedApkUri);
+                    File apkFile = new File(cacheDir, fileName);
+                    
+                    InputStream inputStream = getContentResolver().openInputStream(mSelectedApkUri);
+                    FileOutputStream outputStream = new FileOutputStream(apkFile);
+                    
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    
+                    outputStream.close();
+                    inputStream.close();
+                    
+                    mSelectedApkPath = apkFile.getAbsolutePath();
+                    
+                    InstallResult installResult = PhantomCore.getInstance().installPlugin(mSelectedApkPath);
+                    
+                    if (installResult.isSuccess() && installResult.plugin != null) {
+                        installResult.plugin.start();
+                        return installResult.plugin;
+                    } else {
+                        errorMessage = "安装失败: " + installResult.message;
+                        return null;
+                    }
+                    
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    errorMessage = "安装失败: " + e.getMessage();
+                    return null;
+                }
+            }
+            
+            @Override
+            protected void onPostExecute(PluginInfo pluginInfo) {
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                    mProgressDialog = null;
+                }
+                
+                if (pluginInfo != null && pluginInfo.isStarted()) {
+                    Toast.makeText(MainActivity.this, "插件安装成功！", Toast.LENGTH_SHORT).show();
+                    launchPluginActivity(pluginInfo.packageName, pluginInfo.getLauncherActivities());
+                    
+                    mTvSelectedApk.setText("未选择文件");
+                    mTvSelectedApk.setVisibility(View.GONE);
+                    mBtnInstallAndLaunch.setEnabled(false);
+                    mSelectedApkUri = null;
+                    mSelectedApkPath = null;
+                } else {
+                    Toast.makeText(MainActivity.this, errorMessage != null ? errorMessage : "安装失败", 
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
     }
 
     /**

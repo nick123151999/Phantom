@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.wlqq.phantom.communication.MethodNotFoundException;
 import com.wlqq.phantom.communication.PhantomServiceManager;
 import com.wlqq.phantom.communication.IService;
@@ -15,13 +16,23 @@ import com.wlqq.phantom.library.PhantomCore;
 
 public class EmbedPluginViewActivity extends AppCompatActivity {
     private FrameLayout mFlEmbedView;
+    private MaterialToolbar mToolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_embed_plugin_view);
 
+        mToolbar = findViewById(R.id.toolbar);
         mFlEmbedView = findViewById(R.id.frl_embed_view);
+
+        // 设置返回按钮
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         initViews();
     }
