@@ -2,18 +2,14 @@ package com.wlqq.phantom.plugin.component;
 
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.wlqq.phantom.plugin.component.fragment.ActivityFragment;
-import com.wlqq.phantom.plugin.component.fragment.BroadcastFragment;
-import com.wlqq.phantom.plugin.component.fragment.ServiceFragment;
+import com.wlqq.phantom.plugin.component.view.ActivityView;
+import com.wlqq.phantom.plugin.component.view.BroadcastView;
+import com.wlqq.phantom.plugin.component.view.ServiceView;
 import com.wlqq.phantom.library.proxy.PluginInterceptActivity;
-
-import java.lang.reflect.Method;
 
 public class MainActivity extends PluginInterceptActivity {
 
@@ -21,9 +17,6 @@ public class MainActivity extends PluginInterceptActivity {
 
     private ViewPager mViewPager;
     private MaterialToolbar mToolbar;
-    private Object mFragmentManager;
-    private Method mBeginTransactionMethod;
-    private Fragment[] mFragments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,82 +33,84 @@ public class MainActivity extends PluginInterceptActivity {
             }
         });
 
-        // 初始化 ViewPager 和 Fragment
+        // 初始化 ViewPager
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         
-        // 使用反射获取 FragmentManager，但不进行类型转换
-        try {
-            System.out.println("===== ComponentPlugin: Initializing ViewPager =====");
-            
-            // 通过反射获取 getSupportFragmentManager() 方法
-            Method getSupportFragmentManagerMethod = getClass().getMethod("getSupportFragmentManager");
-            mFragmentManager = getSupportFragmentManagerMethod.invoke(this);
-            System.out.println("===== ComponentPlugin: FragmentManager = " + mFragmentManager);
-            
-            if (mFragmentManager != null) {
-                // 获取 beginTransaction() 方法
-                mBeginTransactionMethod = mFragmentManager.getClass().getMethod("beginTransaction");
-                
-                // 初始化 Fragment 数组
-                mFragments = new Fragment[]{
-                    new ActivityFragment(),
-                    new ServiceFragment(),
-                    new BroadcastFragment()
-                };
-                
-                // 使用自定义的 PagerAdapter
-                ComponentPagerAdapter adapter = new ComponentPagerAdapter();
-                mViewPager.setAdapter(adapter);
-                System.out.println("===== ComponentPlugin: Adapter set successfully, count = " + adapter.getCount());
-            } else {
-                System.err.println("===== ComponentPlugin ERROR: FragmentManager is null =====");
-            }
-        } catch (Exception e) {
-            System.err.println("===== ComponentPlugin ERROR: Failed to initialize ViewPager =====");
-            e.printStackTrace();
-        }
+        System.out.println("===== ComponentPlugin: Initializing ViewPager with custom Views =====");
+        
+        // 创建自定义适配器
+        ComponentViewPagerAdapter pagerAdapter = new ComponentViewPagerAdapter();
+        mViewPager.setAdapter(pagerAdapter);
+        
+        System.out.println("===== ComponentPlugin: Adapter set successfully, count = " + pagerAdapter.getCount());
     }
 
-    class ComponentPagerAdapter extends PagerAdapter {
+    /**
+     * 内部类 ComponentViewPagerAdapter
+     * 
+     * 使用普通 View 而不是 Fragment，避免 ClassLoader 隔离问题
+     */
+    public class ComponentViewPagerAdapter extends PagerAdapter {
+
+        public ComponentViewPagerAdapter() {
+            System.out.println("===== ComponentPlugin: ComponentViewPagerAdapter created =====");
+        }
 
         @Override
         public int getCount() {
-            return mFragments != null ? mFragments.length : 0;
+            return 3; // Activity, Service, Broadcast
         }
 
         @Override
         public boolean isViewFromObject(View view, Object object) {
-            // Fragment 的 view 就是 object
-            return view == ((Fragment) object).getView();
+            return view == object;
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            Fragment fragment = mFragments[position];
-            try {
-                // 使用反射调用 FragmentTransaction 的方法
-                Object transaction = mBeginTransactionMethod.invoke(mFragmentManager);
-                Method addMethod = transaction.getClass().getMethod("add", int.class, Fragment.class);
-                addMethod.invoke(transaction, container.getId(), fragment);
-                Method commitMethod = transaction.getClass().getMethod("commitNowAllowingStateLoss");
-                commitMethod.invoke(transaction);
-            } catch (Exception e) {
-                e.printStackTrace();
+        public Object instantiateItem(android.view.ViewGroup container, int position) {
+            System.out.println("===== ComponentPlugin: instantiateItem position=" + position);
+            
+            // 每次都创建新的 View 实例
+            View view;
+            switch (position) {
+                case 0:
+                    view = new ActivityView(MainActivity.this);
+                    break;
+                case 1:
+                    view = new ServiceView(MainActivity.this);
+                    break;
+                case 2:
+                    view = new BroadcastView(MainActivity.this);
+                    break;
+                default:
+                    view = new View(MainActivity.this);
+                    break;
             }
-            return fragment;
+            
+            System.out.println("===== ComponentPlugin: View created, view=" + view);
+            
+            // 设置布局参数为 MATCH_PARENT
+            android.view.ViewGroup.LayoutParams params = new android.view.ViewGroup.LayoutParams(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT
+            );
+            
+            // 直接将 View 添加到容器
+            container.addView(view, params);
+            
+            System.out.println("===== ComponentPlugin: View added successfully at position " + position);
+            return view;
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            try {
-                Object transaction = mBeginTransactionMethod.invoke(mFragmentManager);
-                Method removeMethod = transaction.getClass().getMethod("remove", Fragment.class);
-                removeMethod.invoke(transaction, object);
-                Method commitMethod = transaction.getClass().getMethod("commitNowAllowingStateLoss");
-                commitMethod.invoke(transaction);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        public void destroyItem(android.view.ViewGroup container, int position, Object object) {
+            View view = (View) object;
+            System.out.println("===== ComponentPlugin: destroyItem position=" + position + ", view=" + view);
+            
+            // 从容器中移除 View
+            container.removeView(view);
+            
+            System.out.println("===== ComponentPlugin: View removed successfully at position " + position);
         }
 
         @Override
