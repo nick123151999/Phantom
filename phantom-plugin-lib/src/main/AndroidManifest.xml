@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 
+        Phantom Plugin Library
+        提供插件开发所需的基础类和接口
+    -->
+</manifest>
+

@@ -27,7 +27,7 @@ dependencies {
     compileOnly "com.android.tools.build:gradle:8.8.0"
     implementation 'org.javassist:javassist:3.30.2-GA'
     // https://mvnrepository.com/artifact/org.jooq/joor-java-6
-    implementation group: 'org.jooq', name: 'joor-java-8', version: '0.9.15'
+    implementation 'org.jooq:joor-java-8:0.9.15'
 }
 
 ext {

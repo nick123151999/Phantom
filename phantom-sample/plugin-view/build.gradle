@@ -4,16 +4,16 @@ apply plugin: 'com.android.application'
 // apply plugin: 'com.wlqq.phantom.plugin'
 
 android {
-    compileSdkVersion androidVersion.compileSdk
-    buildToolsVersion androidVersion.buildTools
-    namespace 'com.wlqq.phantom.plugin.view'
+    compileSdkVersion = androidVersion.compileSdk
+    buildToolsVersion = androidVersion.buildTools
+    namespace = appConfig.pluginViewId
 
     defaultConfig {
-        applicationId "com.wlqq.phantom.plugin.view"
+        applicationId appConfig.pluginViewId
         minSdkVersion androidVersion.minSdk
         targetSdkVersion androidVersion.targetSdk
-        versionCode 10000
-        versionName "1.0.0"
+        versionCode appConfig.pluginViewVersionCode
+        versionName appConfig.pluginViewVersion
     }
 
     buildTypes {
@@ -58,9 +58,12 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    // AndroidX dependencies
+    // AndroidX dependencies - 使用最新版本
     implementation "androidx.appcompat:appcompat:${androidxVersion.appcompat}"
     implementation "androidx.core:core:${androidxVersion.core}"
+    implementation "androidx.legacy:legacy-support-v4:${androidxVersion.legacySupport}"
+    implementation "androidx.fragment:fragment:${androidxVersion.fragment}"
+    implementation "androidx.recyclerview:recyclerview:${androidxVersion.recyclerview}"
 
     implementation 'io.github.shaobin0604:awesomelog:1.0.1'
 
@@ -119,14 +122,14 @@ phantomPluginConfig {
     // 请使用 compileOnly 声明宿主提供的依赖，并手动配置 ProGuard 规则
     
     // 快速安装插件配置 BEGIN
-    // 宿主包名
-    hostApplicationId = "com.wlqq.phantom.sample"
-    // 宿主 launcher Activity full class name
-    hostAppLauncherActivity = "com.wlqq.phantom.sample.MainActivity"
+    // 宿主包名（从全局配置读取）
+    hostApplicationId = appConfig.hostApplicationId
+    // 宿主 launcher Activity full class name（从全局配置读取）
+    hostAppLauncherActivity = appConfig.hostLauncherActivity
 
-    // 插件包名
+    // 插件包名（自动使用 defaultConfig 中的配置）
     pluginApplicationId = android.defaultConfig.applicationId
-    // 插件版本名
+    // 插件版本名（自动使用 defaultConfig 中的配置）
     pluginVersionName = android.defaultConfig.versionName
     // 快速安装插件配置  END
 }

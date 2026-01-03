@@ -1,14 +1,30 @@
-apply plugin: 'java'
+apply plugin: 'com.android.library'
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+android {
+    compileSdkVersion = androidVersion.compileSdk
+    buildToolsVersion = androidVersion.buildTools
+    namespace = 'com.wlqq.phantom.library.plugin'
+
+    defaultConfig {
+        minSdkVersion = androidVersion.minSdk
+    }
+
+    buildFeatures {
+        buildConfig = false
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
 }
 
 dependencies {
-    // 使用 Android SDK 4.1.1.4（这是 com.google.android:android 的最新版本）
-    // 注意：这个依赖已经过时，但对于纯 Java 库仍然适用
-    compileOnly 'com.google.android:android:4.1.1.4'
+    // 使用最新的 Android SDK (API 36)
+    // 现在作为 Android Library，可以直接使用 Android Gradle Plugin 提供的 SDK
+    
+    // 不需要任何额外的 Android SDK 依赖
+    // Android Library 会自动提供所有 Android 类
 }
 
 ext {

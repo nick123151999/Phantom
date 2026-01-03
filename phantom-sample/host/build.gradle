@@ -4,19 +4,19 @@ apply plugin: 'com.android.application'
 // apply plugin: 'com.wlqq.phantom.host'
 
 android {
-    compileSdkVersion androidVersion.compileSdk
-    buildToolsVersion androidVersion.buildTools
-    namespace 'com.wlqq.phantom.sample'
+    compileSdkVersion = androidVersion.compileSdk
+    buildToolsVersion = androidVersion.buildTools
+    namespace = appConfig.hostApplicationId
     
     defaultConfig {
-        applicationId "com.wlqq.phantom.sample"
+        applicationId appConfig.hostApplicationId
         minSdkVersion androidVersion.minSdk
         targetSdkVersion androidVersion.targetSdk
-        versionCode 1
-        versionName "1.0"
+        versionCode appConfig.hostVersionCode
+        versionName appConfig.hostVersionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
+        multiDexEnabled = true
     }
     sourceSets {
         main {
@@ -46,8 +46,8 @@ android {
         targetCompatibility JavaVersion.VERSION_21
     }
     lint {
-        abortOnError false
-        checkReleaseBuilds false
+        abortOnError = false
+        checkReleaseBuilds = false
     }
 }
 

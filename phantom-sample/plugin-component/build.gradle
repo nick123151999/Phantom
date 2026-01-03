@@ -4,18 +4,18 @@ apply plugin: 'com.android.application'
 // apply plugin: 'com.wlqq.phantom.plugin'
 
 android {
-    compileSdkVersion androidVersion.compileSdk
-    buildToolsVersion androidVersion.buildTools
-    namespace 'com.wlqq.phantom.plugin.component'
+    compileSdkVersion = androidVersion.compileSdk
+    buildToolsVersion = androidVersion.buildTools
+    namespace = appConfig.pluginComponentId
 
     defaultConfig {
-        applicationId "com.wlqq.phantom.plugin.component"
+        applicationId appConfig.pluginComponentId
         minSdkVersion androidVersion.minSdk
         targetSdkVersion androidVersion.targetSdk
-        versionCode 10000
-        versionName "1.0.0"
+        versionCode appConfig.pluginComponentVersionCode
+        versionName appConfig.pluginComponentVersion
 
-        multiDexEnabled true
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -73,25 +73,25 @@ dependencies {
     implementation 'io.github.shaobin0604:awesomelog:1.0.1'
 
     // https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxandroid
-    implementation group: 'io.reactivex.rxjava2', name: 'rxandroid', version: '2.1.1'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     // https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
-    implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.5.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     // https://mvnrepository.com/artifact/io.netty/netty-all
-    implementation group: 'io.netty', name: 'netty-all', version: '4.1.34.Final'
+    implementation 'io.netty:netty-all:4.1.34.Final'
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+    implementation 'org.apache.commons:commons-lang3:3.8.1'
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-compress
-    implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.18'
+    implementation 'org.apache.commons:commons-compress:1.18'
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-math3
-    implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+    implementation 'org.apache.commons:commons-math3:3.6.1'
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-text
-    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.6'
+    implementation 'org.apache.commons:commons-text:1.6'
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-pool2
-    implementation group: 'org.apache.commons', name: 'commons-pool2', version: '2.6.1'
+    implementation 'org.apache.commons:commons-pool2:2.6.1'
 
     testImplementation "junit:junit:${testVersion.junit}"
 }
@@ -148,14 +148,14 @@ phantomPluginConfig {
     // 请使用 compileOnly 声明宿主提供的依赖，并手动配置 ProGuard 规则
     
     // 快速安装插件配置 BEGIN
-    // 宿主包名
-    hostApplicationId = "com.wlqq.phantom.sample"
-    // 宿主 launcher Activity full class name
-    hostAppLauncherActivity = "com.wlqq.phantom.sample.MainActivity"
+    // 宿主包名（从全局配置读取）
+    hostApplicationId = appConfig.hostApplicationId
+    // 宿主 launcher Activity full class name（从全局配置读取）
+    hostAppLauncherActivity = appConfig.hostLauncherActivity
 
-    // 插件包名
+    // 插件包名（自动使用 defaultConfig 中的配置）
     pluginApplicationId = android.defaultConfig.applicationId
-    // 插件版本名
+    // 插件版本名（自动使用 defaultConfig 中的配置）
     pluginVersionName = android.defaultConfig.versionName
     // 快速安装插件配置  END
 }

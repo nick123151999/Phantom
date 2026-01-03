@@ -35,15 +35,33 @@ ext {
             androidxJunit   : "1.2.1",          // Latest stable
             espresso        : "3.6.1",          // Latest stable
     ]
+
+    // 应用包名配置 - 统一管理所有模块的 applicationId
+    appConfig = [
+            // 宿主应用配置
+            hostApplicationId       : "com.wlqq.phantom.sample",
+            hostVersionCode         : 1,
+            hostVersionName         : "1.0",
+            hostLauncherActivity    : "com.wlqq.phantom.sample.MainActivity",
+            
+            // 插件配置
+            pluginComponentId       : "com.wlqq.phantom.plugin.component",
+            pluginComponentVersion  : "1.0.0.0",
+            pluginComponentVersionCode: 10000,
+            
+            pluginViewId            : "com.wlqq.phantom.plugin.view",
+            pluginViewVersion       : "1.0.0",
+            pluginViewVersionCode   : 10000,
+    ]
 }
 
 buildscript {
     repositories {
         maven {
-            url 'https://maven.aliyun.com/repository/public/'
+            url = 'https://maven.aliyun.com/repository/public/'
         }
         maven {
-            url 'https://maven.aliyun.com/repository/google/'
+            url = 'https://maven.aliyun.com/repository/google/'
         }
         google()
         mavenCentral()
@@ -65,10 +83,10 @@ buildscript {
 allprojects {
     repositories {
         maven {
-            url 'https://maven.aliyun.com/repository/public/'
+            url = 'https://maven.aliyun.com/repository/public/'
         }
         maven {
-            url 'https://maven.aliyun.com/repository/google/'
+            url = 'https://maven.aliyun.com/repository/google/'
         }
         google()
         mavenCentral()
@@ -115,8 +133,8 @@ subprojects { subProject ->
                 }
 
                 lintOptions {
-                    checkReleaseBuilds false
-                    abortOnError false
+                    checkReleaseBuilds = false
+                    abortOnError = false
                 }
 
                 packagingOptions {

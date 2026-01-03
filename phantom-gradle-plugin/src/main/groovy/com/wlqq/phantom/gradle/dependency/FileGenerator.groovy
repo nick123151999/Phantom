@@ -21,9 +21,10 @@ import com.wlqq.phantom.gradle.Constant
 import com.wlqq.phantom.gradle.utils.Log
 import org.gradle.api.GradleException
 import org.gradle.api.Project
-import org.gradle.util.GFileUtils
 
+import java.nio.file.Files
 import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 
 abstract class FileGenerator {
     protected Project project;
@@ -65,7 +66,9 @@ abstract class FileGenerator {
             final def intermediatesDir = new File(project.buildDir, "intermediates")
             final def intermediatesFile = new File(intermediatesDir,
                     Paths.get(Constant.INTERMEDIATES_DIR, variantName, outputFileName).toString())
-            GFileUtils.copyFile(outputFile, intermediatesFile)
+            // Gradle 7+ compatible: use Files.copy instead of deprecated GFileUtils
+            intermediatesFile.parentFile.mkdirs()
+            Files.copy(outputFile.toPath(), intermediatesFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
 
         } catch (Exception e) {
             throw new GradleException("error generateFile", e)

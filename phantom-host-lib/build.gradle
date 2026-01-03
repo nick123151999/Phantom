@@ -1,9 +1,9 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion androidVersion.compileSdk
-    buildToolsVersion androidVersion.buildTools
-    namespace 'com.wlqq.phantom.library'
+    compileSdkVersion = androidVersion.compileSdk
+    buildToolsVersion = androidVersion.buildTools
+    namespace = 'com.wlqq.phantom.library'
 
     defaultConfig {
         minSdkVersion androidVersion.minSdk
@@ -42,8 +42,8 @@ android {
         }
     }
     lint {
-        abortOnError false
-        checkReleaseBuilds false
+        abortOnError = false
+        checkReleaseBuilds = false
     }
 
 }

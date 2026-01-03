@@ -26,10 +26,8 @@ afterEvaluate {
                 
                 // 根据项目类型选择不同的发布方式
                 if (project.plugins.hasPlugin('com.android.library')) {
-                    // Android Library - AGP 8+ 需要在 afterEvaluate 中访问 components
-                    afterEvaluate {
-                        from components.findByName('release')
-                    }
+                    // Android Library - 使用 artifact 方式发布 AAR
+                    artifact bundleReleaseAar
                 } else if (project.plugins.hasPlugin('java')) {
                     // Java Library
                     from components.java
@@ -94,8 +92,8 @@ afterEvaluate {
     }
 }
 
-// 便捷任务：发布所有模块到本地
-task publishAllToMavenLocal {
+// 便捷任务：发布所有模块到本地（Gradle 7+ 兼容语法）
+tasks.register('publishAllToMavenLocal') {
     group = 'publishing'
     description = 'Publish all Phantom modules to Maven Local'
     
@@ -106,8 +104,8 @@ task publishAllToMavenLocal {
     dependsOn ':maven-version:publishToMavenLocal'
 }
 
-// 便捷任务：发布所有模块到远程仓库
-task publishAll {
+// 便捷任务：发布所有模块到远程仓库（Gradle 7+ 兼容语法）
+tasks.register('publishAll') {
     group = 'publishing'
     description = 'Publish all Phantom modules to remote Maven repository'
     
