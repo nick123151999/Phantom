@@ -580,8 +580,11 @@ public class PluginManager {
 
             try {
                 FileUtils.copyFile(apk, dstApk);
-                // Android 10+ (API 29+) 不允许从可写目录加载 DEX 文件
-                // 设置 APK 文件权限为只读 (0444 = r--r--r--)
+                // Android 10+ (API 29+) 安全限制：不允许从可写目录加载 DEX 文件
+                // 必须将 APK 文件权限设置为只读 (0444 = r--r--r--)，否则会抛出 SecurityException
+                // setReadable(true, false): 所有用户可读
+                // setWritable(false, false): 所有用户不可写
+                // setExecutable(false, false): 所有用户不可执行
                 if (!dstApk.setReadable(true, false)) {
                     VLog.w("Failed to set %s as readable", dstApk.getName());
                 }

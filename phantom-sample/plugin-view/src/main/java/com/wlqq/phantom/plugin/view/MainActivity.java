@@ -27,7 +27,8 @@ import com.wlqq.phantom.communication.PhantomServiceManager;
 import com.wlqq.phantom.communication.PhantomUtils;
 import com.wlqq.phantom.library.proxy.PluginInterceptActivity;
 
-// 注意：这个 Activity 不使用 Fragment，所以继承 PluginInterceptActivity
+// 所有插件 Activity 都应该继承 PluginInterceptActivity
+// 运行时 PluginInterceptActivity 继承自 FragmentActivity，支持 Fragment 功能
 public class MainActivity extends PluginInterceptActivity implements View.OnClickListener {
 
     private static final String CHANNEL_ID = "phantom_plugin_channel";

@@ -245,9 +245,14 @@ public class ActivityHostProxy extends FragmentActivity implements Cloneable {
     }
 
 
-    // 替换support-v4 25.3.1版本Fragment的activity.由于Fragment的getActivity()方法是final的，不能被复写，
-    // 只能用反射进行替换
-    // AndroidX 版本中，如果字段不存在则跳过（某些情况下不需要替换）
+    // 替换 AndroidX Fragment 的 Activity 引用
+    // 
+    // 由于 Fragment.getActivity() 方法是 final 的，无法被覆写，
+    // 因此需要通过反射修改 Fragment 内部的 mActivity 和 mContext 字段，
+    // 将它们指向插件的 Activity 实例，而不是宿主的 Activity 实例。
+    // 
+    // 注意：AndroidX 版本中，如果相关字段不存在（例如 Activity 不使用 Fragment），
+    // 则会记录警告并跳过替换，这是正常行为。
     private void replaceSupportFragmentContext() throws ReplaceSupportFragmentContextException {
         try {
             // 检查是否所有必需的字段都存在

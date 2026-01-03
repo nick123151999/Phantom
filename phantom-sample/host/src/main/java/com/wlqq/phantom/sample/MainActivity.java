@@ -199,7 +199,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Plugin apk list in assets/plugins
+     * 异步初始化插件列表
+     * <p>
+     * 该方法会：
+     * <ol>
+     *   <li>扫描 assets/plugins 目录下的所有 APK 文件</li>
+     *   <li>自动安装这些插件</li>
+     *   <li>启动已安装的插件</li>
+     *   <li>将插件信息添加到 RecyclerView 列表中</li>
+     * </ol>
+     * </p>
      */
     private void initPluginListAsync() {
         // Pair<plugin_file_name, PluginInfo>
