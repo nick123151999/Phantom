@@ -29,12 +29,3 @@ dependencies {
     // https://mvnrepository.com/artifact/org.jooq/joor-java-6
     implementation 'org.jooq:joor-java-8:0.9.15'
 }
-
-ext {
-    POM_ARTIFACT_ID = 'phantom-gradle-plugin'
-    POM_VERSION_NAME = phantomVersion.pluginGradle
-    POM_DESC = 'phantom gradle plugin'
-}
-
-// Use Maven Publish Plugin instead of deprecated Bintray
-apply from: file("${rootDir}/buildscript/publish_maven.gradle")

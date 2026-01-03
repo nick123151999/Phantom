@@ -26,12 +26,3 @@ dependencies {
     // 不需要任何额外的 Android SDK 依赖
     // Android Library 会自动提供所有 Android 类
 }
-
-ext {
-    POM_ARTIFACT_ID = 'phantom-plugin-lib'
-    POM_VERSION_NAME = phantomVersion.pluginLib
-    POM_DESC = 'phantom plugin library'
-}
-
-// Use Maven Publish Plugin instead of deprecated Bintray
-apply from: file("${rootDir}/buildscript/publish_maven.gradle")

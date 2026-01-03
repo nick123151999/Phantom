@@ -17,7 +17,16 @@ public class ViewProviderService {
      */
     @RemoteMethod(name = "getPluginView")
     public View getPluginView(final Context context) {
-        return new PluginView(context);
+        System.out.println("===== ViewProviderService: getPluginView called, context = " + context);
+        try {
+            PluginView view = new PluginView(context);
+            System.out.println("===== ViewProviderService: PluginView created = " + view);
+            return view;
+        } catch (Exception e) {
+            System.err.println("===== ViewProviderService ERROR: Failed to create PluginView =====");
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**

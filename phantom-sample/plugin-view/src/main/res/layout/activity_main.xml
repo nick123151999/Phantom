@@ -1,80 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (C) 2017-2018 Manbang Group
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
+    android:background="#F5F5F5"
     tools:context="com.wlqq.phantom.plugin.view.MainActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/colorPrimary"
-        android:gravity="center_vertical"
-        android:paddingLeft="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:text="Plugin View"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/action_bar_title_size"
-        android:textStyle="bold"
-        android:elevation="4dp"/>
-
-    <LinearLayout
+    <!-- App Bar -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:elevation="4dp"
+        app:elevation="4dp">
 
-        <Button
-            android:id="@+id/btn_toast"
+        <com.google.android.material.appbar.MaterialToolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Toast"/>
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:title="🎨 Plugin View Demo"
+            app:titleTextColor="@android:color/white"/>
 
-        <Button
-            android:id="@+id/btn_notification"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Notification"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <Button
-            android:id="@+id/btn_webview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="WebView"/>
-    </LinearLayout>
-
-    <FrameLayout
+    <!-- Main Content -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_margin="16dp">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <WebView
-            android:id="@+id/webview"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"/>
-    </FrameLayout>
-</LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- 功能卡片 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="16dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🎯 插件功能演示"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="#1C1B1F"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="测试插件的各种功能"
+                        android:textSize="14sp"
+                        android:textColor="#49454F"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:background="#E0E0E0"/>
+
+                    <!-- Toast 按钮 -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_toast"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginBottom="12dp"
+                        android:text="💬 显示 Toast"
+                        android:textSize="16sp"
+                        app:icon="@android:drawable/ic_dialog_info"
+                        app:iconGravity="start"
+                        app:cornerRadius="12dp"
+                        style="@style/Widget.MaterialComponents.Button"/>
+
+                    <!-- Notification 按钮 -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_notification"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginBottom="12dp"
+                        android:text="🔔 发送通知"
+                        android:textSize="16sp"
+                        app:icon="@android:drawable/ic_popup_reminder"
+                        app:iconGravity="start"
+                        app:cornerRadius="12dp"
+                        style="@style/Widget.MaterialComponents.Button"/>
+
+                    <!-- WebView 按钮 -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_webview"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="🌐 打开 WebView"
+                        android:textSize="16sp"
+                        app:icon="@android:drawable/ic_menu_view"
+                        app:iconGravity="start"
+                        app:cornerRadius="12dp"
+                        style="@style/Widget.MaterialComponents.Button"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- WebView 容器 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="16dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <WebView
+                    android:id="@+id/webview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

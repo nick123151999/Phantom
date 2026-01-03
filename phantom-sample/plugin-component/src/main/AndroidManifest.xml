@@ -23,7 +23,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.Light.NoTitleBar">
+        android:theme="@style/AppTheme">
 
         <!-- 2.x 的插件需要运行在 Phantom 2.0.0 及以上版本 -->
         <meta-data

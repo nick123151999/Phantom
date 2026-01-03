@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material Design 3 Theme -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/md_theme_primary</item>
+        <item name="colorPrimaryDark">@color/md_theme_primaryContainer</item>
+        <item name="colorAccent">@color/md_theme_secondary</item>
+        <item name="android:windowBackground">@color/md_theme_background</item>
+        <item name="android:statusBarColor">@color/md_theme_primary</item>
+    </style>
+</resources>
+

@@ -54,8 +54,9 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation "com.wlqq.phantom:phantom-host-lib:${phantomVersion.hostLib}"
-    implementation "com.wlqq.phantom:phantom-communication-lib:${phantomVersion.communicationLib}"
+    // 使用项目依赖
+    implementation project(':phantom-host-lib')
+    implementation project(':phantom-communication-lib')
 
     // AndroidX dependencies
     implementation "androidx.appcompat:appcompat:${androidxVersion.appcompat}"
@@ -64,6 +65,10 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:${androidxVersion.constraintlayout}"
     implementation "androidx.lifecycle:lifecycle-runtime:${androidxVersion.lifecycle}"
     implementation "androidx.multidex:multidex:${androidxVersion.multidex}"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
+    
+    // Material Design Components
+    implementation 'com.google.android.material:material:1.12.0'
 
     implementation 'io.github.shaobin0604:awesomelog:1.0.1'
 
@@ -71,13 +76,5 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:${testVersion.androidxJunit}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${testVersion.espresso}"
 
-    implementation 'com.tencent.bugly:crashreport_upgrade:1.1.7'
-}
-
-// 使用本地源码构建，而不是使用 Maven 仓库中的版本
-// 这样可以直接测试 phantom-host-lib 的最新修改
-configurations.all {
-    resolutionStrategy.dependencySubstitution {
-        substitute module("com.wlqq.phantom:phantom-host-lib:${phantomVersion.hostLib}") using project(":phantom-host-lib")
-    }
+    implementation 'com.tencent.bugly:crashreport_upgrade:1.6.1'
 }

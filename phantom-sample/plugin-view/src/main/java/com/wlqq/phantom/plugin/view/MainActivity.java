@@ -153,12 +153,16 @@ public class MainActivity extends PluginInterceptActivity implements View.OnClic
             final Intent proxyIntent = PhantomUtils.resolveActivity(intent, ActivityInfo.LAUNCH_MULTIPLE);
 
             // Android 12+ (API 31+) 要求 PendingIntent 必须指定 FLAG_IMMUTABLE 或 FLAG_MUTABLE
+            // 注意：使用 this 而不是 getApplicationContext()，确保 PendingIntent 能正确启动 Activity
             int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 flags |= PendingIntent.FLAG_IMMUTABLE;
             }
-            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
-                    0, proxyIntent, flags);
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    this,  // 使用 Activity context
+                    0, 
+                    proxyIntent, 
+                    flags);
             builder.setContentIntent(pendingIntent);
             builder.setWhen(System.currentTimeMillis());
             nm.notify(0xFF, builder.build());

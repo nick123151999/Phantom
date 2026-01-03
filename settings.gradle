@@ -1,6 +1,6 @@
 include ':phantom-host-lib'
 include ':phantom-plugin-lib'
-include ':phantom-gradle-plugin'
+// include ':phantom-gradle-plugin'  // 已禁用：项目内部使用不需要此插件
 include ':phantom-communication-lib'
 include ':maven-version'
 include ':phantom-sample:host'

@@ -16,6 +16,10 @@
   -->
 
 <resources>
-    <style name="AppTheme" parent="android:Theme.Light.NoTitleBar">
+    <!-- 使用 Material Components 主题以支持 MaterialButton 等组件 -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">#673AB7</item>
+        <item name="colorPrimaryDark">#512DA8</item>
+        <item name="colorAccent">#FF4081</item>
     </style>
 </resources>

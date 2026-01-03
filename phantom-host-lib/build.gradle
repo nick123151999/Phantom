@@ -49,25 +49,16 @@ android {
 }
 
 dependencies {
-    testImplementation "junit:junit:${testVersion.junit}"
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     
     // AndroidX dependencies
     implementation "androidx.core:core:${androidxVersion.core}"
     implementation "androidx.appcompat:appcompat:${androidxVersion.appcompat}"
-    implementation "androidx.collection:collection:1.4.0" // Added for ArrayMap/ArraySet
-    implementation "androidx.fragment:fragment:1.8.0" // Added for Fragment support
+    implementation "androidx.collection:collection:1.5.0" // Added for ArrayMap/ArraySet
+    implementation "androidx.fragment:fragment:1.8.9" // Added for Fragment support
     implementation "androidx.preference:preference:1.2.1" // Added for PreferenceFragment support
 
-    implementation "com.wlqq.phantom:maven-version:1.1.0"
-    implementation "com.wlqq.phantom:phantom-communication-lib:${phantomVersion.communicationLib}"
+    // 使用项目依赖
+    implementation project(':maven-version')
+    implementation project(':phantom-communication-lib')
 }
-
-ext {
-    POM_ARTIFACT_ID = 'phantom-host-lib'
-    POM_VERSION_NAME = phantomVersion.hostLib
-    POM_DESC = 'phantom host core library'
-}
-
-// Use Maven Publish Plugin instead of deprecated Bintray
-apply from: file("${rootDir}/buildscript/publish_maven.gradle")

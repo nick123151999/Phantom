@@ -52,8 +52,9 @@ android {
 }
 
 dependencies {
-    compileOnly "com.wlqq.phantom:phantom-communication-lib:${phantomVersion.communicationLib}"
-    compileOnly "com.wlqq.phantom:phantom-plugin-lib:${phantomVersion.pluginLib}"
+    // 使用项目依赖
+    compileOnly project(':phantom-communication-lib')
+    compileOnly project(':phantom-plugin-lib')
     compileOnly project(':phantom-host-lib')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -64,10 +65,13 @@ dependencies {
     implementation "androidx.legacy:legacy-support-v4:${androidxVersion.legacySupport}"
     implementation "androidx.fragment:fragment:${androidxVersion.fragment}"
     implementation "androidx.recyclerview:recyclerview:${androidxVersion.recyclerview}"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
+    
+    // Material Design Components
+    implementation 'com.google.android.material:material:1.12.0'
 
     implementation 'io.github.shaobin0604:awesomelog:1.0.1'
 
-    testImplementation 'junit:junit:4.13.2'
 }
 
 def deletePluginInHost() {

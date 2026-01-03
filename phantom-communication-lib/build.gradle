@@ -1,24 +1,25 @@
-apply plugin: 'java'
+apply plugin: 'com.android.library'
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+android {
+    compileSdkVersion = androidVersion.compileSdk
+    buildToolsVersion = androidVersion.buildTools
+    namespace = 'com.wlqq.phantom.communication'
+
+    defaultConfig {
+        minSdkVersion = androidVersion.minSdk
+    }
+
+    buildFeatures {
+        buildConfig = false
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
 }
 
 dependencies {
-    compileOnly 'com.google.android:android:4.+'
+    // 现在作为 Android Library，直接使用 Android SDK
     testImplementation 'junit:junit:4.13.2'
 }
-
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-}
-
-ext {
-    POM_ARTIFACT_ID = 'phantom-communication-lib'
-    POM_VERSION_NAME = phantomVersion.communicationLib
-    POM_DESC = 'phantom communication library'
-}
-
-// Use Maven Publish Plugin instead of deprecated Bintray
-apply from: file("${rootDir}/buildscript/publish_maven.gradle")

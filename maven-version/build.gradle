@@ -9,12 +9,3 @@ dependencies {
     testImplementation "junit:junit:${testVersion.junit}"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
-
-ext {
-    POM_ARTIFACT_ID = 'maven-version'
-    POM_VERSION_NAME = '1.1.0'
-    POM_DESC = 'maven artifact version comparison library'
-}
-
-// Use Maven Publish Plugin instead of deprecated Bintray
-apply from: file("${rootDir}/buildscript/publish_maven.gradle")
