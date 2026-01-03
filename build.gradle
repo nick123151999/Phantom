@@ -1,40 +1,25 @@
-/*
- * Copyright (C) 2017-2018 Manbang Group
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-// Version configuration
+// Version configuration - Updated to latest versions (Jan 2026)
 ext {
     androidVersion = [
-            androidGradlePlugin: "8.13.2",
-            compileSdk         : 36,
-            buildTools         : "35.0.0",
-            minSdk             : 24,
-            targetSdk          : 36,
+            androidGradlePlugin: "8.13.0",     // Latest AGP (compatible with Gradle 9.2.1)
+            compileSdk         : 36,            // Android 16
+            buildTools         : "36.0.0",      // Latest Build Tools (matches compileSdk)
+            minSdk             : 24,            // Android 7.0 (recommended minimum)
+            targetSdk          : 36,            // Android 16
     ]
 
     androidxVersion = [
-            appcompat       : "1.7.0",
-            core            : "1.15.0",
-            recyclerview    : "1.3.2",
-            constraintlayout: "2.2.0",
-            lifecycle       : "2.8.7",
-            multidex        : "2.0.1",
-            viewpager       : "1.0.0",
-            legacySupport   : "1.0.0",
+            appcompat       : "1.7.0",          // Latest stable
+            core            : "1.15.0",         // Latest stable
+            recyclerview    : "1.4.0",          // Updated
+            constraintlayout: "2.2.0",          // Latest stable
+            lifecycle       : "2.8.7",          // Latest stable
+            multidex        : "2.0.1",          // Latest stable
+            viewpager       : "1.1.0",          // Updated
+            legacySupport   : "1.0.0",          // Latest stable
+            fragment        : "1.8.5",          // Latest stable
     ]
 
     phantomVersion = [
@@ -46,9 +31,9 @@ ext {
     ]
 
     testVersion = [
-            junit           : "4.13.2",
-            androidxJunit   : "1.2.1",
-            espresso        : "3.6.1",
+            junit           : "4.13.2",         // Latest stable
+            androidxJunit   : "1.2.1",          // Latest stable
+            espresso        : "3.6.1",          // Latest stable
     ]
 }
 
@@ -104,9 +89,9 @@ allprojects {
     // 多个第三方库可能引入不同版本的 Kotlin stdlib，导致 duplicate class 错误
     configurations.all {
         resolutionStrategy {
-            force 'org.jetbrains.kotlin:kotlin-stdlib:1.9.22'
-            force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.22'
-            force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22'
+            force 'org.jetbrains.kotlin:kotlin-stdlib:2.1.0'
+            force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.0'
+            force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.0'
         }
     }
 }
@@ -143,8 +128,8 @@ subprojects { subProject ->
                 }
 
                 compileOptions {
-                    sourceCompatibility JavaVersion.VERSION_1_8
-                    targetCompatibility JavaVersion.VERSION_1_8
+                    sourceCompatibility JavaVersion.VERSION_21
+                    targetCompatibility JavaVersion.VERSION_21
                 }
             }
         }

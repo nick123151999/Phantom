@@ -5,9 +5,22 @@
 build/
 */build/
 */*/build/
+**/build/
 
 # Gradle Wrapper（保留 jar 文件）
 !gradle/wrapper/gradle-wrapper.jar
+
+# Gradle 缓存和临时文件
+.gradle-cache/
+gradle-app.setting
+.gradletasknamecache
+
+# Gradle 9.x 配置缓存
+.gradle/configuration-cache/
+.gradle/configuration-cache-reports/
+
+# Gradle Build Scan
+.gradle/build-scan-data/
 
 # ===========================
 # Android 构建产物
@@ -19,6 +32,25 @@ build/
 *.class
 captures/
 output.json
+*.aar
+
+# Android 签名文件
+*.jks
+*.keystore
+key.properties
+
+# Android Profiler
+*.hprof
+
+# NDK
+obj/
+.externalNativeBuild/
+.cxx/
+
+# AGP 8+ 新增
+lint-results*.html
+lint-results*.xml
+lint-baseline.xml
 
 # ===========================
 # 本地配置文件
@@ -38,6 +70,27 @@ gradle.properties.local
 .idea_modules/
 out/
 
+# Android Studio 特定
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/assetWizardSettings.xml
+.idea/dictionaries
+.idea/libraries
+.idea/caches
+.idea/modules.xml
+.idea/navEditor.xml
+.idea/misc.xml
+
+# Android Studio 3.6+ 序列化缓存文件
+.idea/codestream.xml
+
+# Android Studio Arctic Fox+ (2020.3.1)
+.idea/deploymentTargetDropDown.xml
+
+# Rider
+.idea/.idea.*.dir/
+
 # Eclipse
 .classpath
 .project
@@ -46,6 +99,10 @@ bin/
 
 # VS Code
 .vscode/
+*.code-workspace
+
+# Fleet
+.fleet/
 
 # ===========================
 # 操作系统文件
@@ -102,6 +159,17 @@ $RECYCLE.BIN/
 test-results/
 coverage/
 *.hprof
+jacoco/
+*.exec
+
+# JUnit
+junit*.properties
+
+# Android Test
+.android/
+androidTest-results/
+connected/
+instrumented/
 
 # ===========================
 # 敏感文件（重要！）
@@ -111,6 +179,12 @@ coverage/
 google-services.json
 firebase.json
 secrets.properties
+keystore.properties
+signing.properties
+
+# API Keys
+**/apikeys.properties
+**/api_keys.xml
 
 # ===========================
 # Phantom 特定
@@ -125,6 +199,39 @@ phantom-sample/host/src/main/assets/plugins/*.apk
 **/provided_dependencies_v2.txt
 
 # ===========================
+# Maven / 发布相关
+# ===========================
+.m2/
+maven-metadata-local.xml
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# ===========================
+# 依赖管理
+# ===========================
+# Dependency verification
+gradle/verification-metadata.xml
+
+# Version catalog
+gradle/libs.versions.toml.lock
+
+# ===========================
+# 性能分析
+# ===========================
+*.trace
+*.prof
+*.speedscope
+
+# ===========================
+# Kotlin
+# ===========================
+.kotlin/
+kotlin-classes/
+
+# ===========================
 # 其他
 # ===========================
 *.orig
@@ -132,3 +239,79 @@ phantom-sample/host/src/main/assets/plugins/*.apk
 proguard/
 freeline/
 freeline_project_description.json
+
+# Crashlytics
+crashlytics-build.properties
+fabric.properties
+
+# Firebase
+google-services.json
+GoogleService-Info.plist
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/readme.md
+
+# Bundle artifact
+*.jsbundle
+
+# CocoaPods
+/ios/Pods/
+
+# ===========================
+# AI 辅助开发工具
+# ===========================
+# GitHub Copilot
+.copilot/
+
+# Cursor AI
+.cursor/
+.cursorignore
+
+# ===========================
+# 容器化
+# ===========================
+.docker/
+docker-compose.override.yml
+
+# ===========================
+# CI/CD
+# ===========================
+.github/workflows/*.log
+
+# ===========================
+# 文档生成
+# ===========================
+docs/_build/
+site/
+
+# ===========================
+# 数据库
+# ===========================
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+
+# ===========================
+# 环境变量
+# ===========================
+.env
+.env.local
+.env.*.local
+
+# ===========================
+# 包管理器锁文件（可选）
+# ===========================
+# 如果团队使用不同的 Gradle 版本，可以忽略
+# gradle/wrapper/gradle-wrapper.properties
+
+# ===========================
+# 自动生成的文档
+# ===========================
+**/UPGRADE_TO_LATEST_*.md.backup
+**/GRADLE_*_SUMMARY.md.backup

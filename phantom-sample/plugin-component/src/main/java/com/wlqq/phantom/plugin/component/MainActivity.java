@@ -1,23 +1,8 @@
-/*
- * Copyright (C) 2017-2018 Manbang Group
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.wlqq.phantom.plugin.component;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -38,11 +23,20 @@ public class MainActivity extends PluginInterceptActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // TODO: Fragment 功能暂时禁用，因为编译器无法识别 getSupportFragmentManager() 方法
-        // 这是一个已知问题，需要进一步调查
-        // mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        // FragmentManager fragmentManager = super.getSupportFragmentManager();
-        // mViewPager.setAdapter(new ComponentFragmentPagerAdapter(fragmentManager));
+        // 初始化 ViewPager 和 Fragment
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        
+        // 使用反射获取 FragmentManager
+        // 因为 PluginInterceptActivity 在编译时是存根类（继承自 Activity），
+        // 但运行时实际继承自 FragmentActivity，所以可以通过反射调用 getSupportFragmentManager()
+        try {
+            FragmentManager fragmentManager = (FragmentManager) getClass()
+                    .getMethod("getSupportFragmentManager")
+                    .invoke(this);
+            mViewPager.setAdapter(new ComponentFragmentPagerAdapter(fragmentManager));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     class ComponentFragmentPagerAdapter extends FragmentPagerAdapter {

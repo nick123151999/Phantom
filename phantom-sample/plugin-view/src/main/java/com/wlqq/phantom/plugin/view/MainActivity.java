@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2017-2018 Manbang Group
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.wlqq.phantom.plugin.view;
 
 import android.annotation.SuppressLint;
@@ -28,6 +12,7 @@ import android.os.Bundle;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -49,7 +34,6 @@ public class MainActivity extends PluginInterceptActivity implements View.OnClic
 
     NotificationManagerCompat nm;
 
-    @SuppressLint("JavascriptInterface")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,19 +68,66 @@ public class MainActivity extends PluginInterceptActivity implements View.OnClic
     private void initWebView() {
         mWebView = (WebView) findViewById(R.id.webview);
         WebViewResourceHelper.addChromeResourceIfNeeded(this);
+        
+        // 配置 WebView 设置
         final WebSettings settings = mWebView.getSettings();
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
         settings.setUseWideViewPort(true);
         settings.setJavaScriptEnabled(true);
+        
+        // 安全配置 - 禁止混合内容（HTTPS 页面加载 HTTP 资源）
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        }
+        
+        // 安全配置 - 禁用文件访问（如果不需要）
+        settings.setAllowFileAccess(false);
+        settings.setAllowContentAccess(false);
+        
+        // 安全配置 - 禁用文件 URL 访问（防止本地文件泄露）
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            settings.setAllowFileAccessFromFileURLs(false);
+            settings.setAllowUniversalAccessFromFileURLs(false);
+        }
+        
         mWebView.setWebChromeClient(new WebChromeClient());
-        mWebView.addJavascriptInterface(this, "android");
+        
+        // 使用独立的 JavaScript 接口类，确保所有方法都有 @JavascriptInterface 注解
+        mWebView.addJavascriptInterface(new WebAppInterface(this), "android");
+        
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return super.shouldOverrideUrlLoading(view, url);
             }
         });
+    }
+    
+    /**
+     * JavaScript 接口类
+     * 注意：所有暴露给 JavaScript 的方法都必须添加 @JavascriptInterface 注解
+     */
+    private static class WebAppInterface {
+        private final Context mContext;
+        
+        WebAppInterface(Context context) {
+            mContext = context;
+        }
+        
+        /**
+         * 显示 Toast 消息（从 JavaScript 调用）
+         * 用法：android.showToast("Hello from JavaScript");
+         */
+        @JavascriptInterface
+        public void showToast(String message) {
+            // 确保在 UI 线程执行
+            if (mContext instanceof MainActivity) {
+                ((MainActivity) mContext).runOnUiThread(() -> {
+                    Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+                });
+            }
+        }
     }
 
     @Override
