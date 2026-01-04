@@ -110,7 +110,7 @@ subprojects { subProject ->
         options.encoding = 'UTF-8'
     }
 
-    tasks.withType(Javadoc).all { enabled = false }
+    tasks.withType(Javadoc).configureEach { enabled = false }
 
     afterEvaluate { project ->
         if (project.hasProperty("android")) {
